@@ -6,5 +6,21 @@
       "service": "Lambda",
       "dependsOn": []
     }
+  },
+  "api": {
+    "authorizeApi": {
+      "service": "API Gateway",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "authorizeFunction",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
+        }
+      ]
+    }
   }
 }

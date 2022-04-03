@@ -1,0 +1,35 @@
+{
+  "paths": [
+    {
+      "name": "/authorize",
+      "lambdaFunction": "authorizeFunction",
+      "privacy": {
+        "open": true
+      },
+      "policyResourceName": "/authorize"
+    }
+  ],
+  "resourceName": "authorizeApi",
+  "apiName": "authorizeApi",
+  "functionArns": [
+    {
+      "lambdaFunction": "authorizeFunction"
+    }
+  ],
+  "privacy": {
+    "auth": 0,
+    "unauth": 0,
+    "authRoleName": "amplify-spotifytoolbox-dev-223638-authRole",
+    "unAuthRoleName": "amplify-spotifytoolbox-dev-223638-unauthRole"
+  },
+  "dependsOn": [
+    {
+      "category": "function",
+      "resourceName": "authorizeFunction",
+      "attributes": [
+        "Name",
+        "Arn"
+      ]
+    }
+  ]
+}
