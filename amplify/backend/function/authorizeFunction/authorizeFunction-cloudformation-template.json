@@ -18,6 +18,8 @@
         }
         
     
+    
+    
     },
     "Conditions": {
         "ShouldNotCreateEnvResources": {
@@ -49,13 +51,13 @@
             "FunctionName": {
                 "Fn::If": [
                     "ShouldNotCreateEnvResources",
-                    "refreshFunction",
+                    "authorizeFunction",
                     {
 
                         "Fn::Join": [
                             "",
                             [
-                                "refreshFunction",
+                                "authorizeFunction",
                                 "-",
                                 {
                                     "Ref": "env"
@@ -80,13 +82,13 @@
                 "RoleName": {
                     "Fn::If": [
                         "ShouldNotCreateEnvResources",
-                        "spotifytoolboxLambdaRole45c5c3de",
+                        "spotifytoolboxLambdaRole9204eb04",
                         {
 
                             "Fn::Join": [
                                 "",
                                 [
-                                    "spotifytoolboxLambdaRole45c5c3de",
+                                    "spotifytoolboxLambdaRole9204eb04",
                                     "-",
                                     {
                                         "Ref": "env"
