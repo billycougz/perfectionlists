@@ -15,7 +15,7 @@
       "function": {
         "authorizeFunction": {
           "deploymentBucketName": "amplify-spotifytoolbox-dev-223638-deployment",
-          "s3Key": "amplify-builds/authorizeFunction-7567485a43716d343332-build.zip"
+          "s3Key": "amplify-builds/authorizeFunction-7764725975456147494f-build.zip"
         }
       }
     }

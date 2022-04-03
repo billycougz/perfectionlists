@@ -1,3 +1,17 @@
+/*
+Use the following code to retrieve configured secrets from SSM:
+
+const aws = require('aws-sdk');
+
+const { Parameters } = await (new aws.SSM())
+  .getParameters({
+    Names: ["CLIENT_ID","CLIENT_SECRET"].map(secretName => process.env[secretName]),
+    WithDecryption: true,
+  })
+  .promise();
+
+Parameters will be of the form { Name: 'secretName', Value: 'secretValue', ... }[]
+*/
 const express = require('express');
 const bodyParser = require('body-parser');
 const request = require('request');
@@ -35,7 +49,7 @@ const AUTH_COOKIE_NAME = 'spotify-toolbox-auth';
 app.get('/authorize/login', async (req, res) => {
   console.log('/login');
   const { CLIENT_ID, REDIRECT_URI } = await getSecrets();
-  const state = randomstring(16);
+  const state = randomstring.generate(16);
   const scope =
     'user-read-private user-read-email user-read-recently-played user-top-read user-follow-read user-follow-modify playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private';
   res.cookie(AUTH_COOKIE_NAME, state);

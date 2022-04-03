@@ -1,3 +1,8 @@
 {
-  "lambdaLayers": []
+  "lambdaLayers": [],
+  "permissions": {},
+  "secretNames": [
+    "CLIENT_ID",
+    "CLIENT_SECRET"
+  ]
 }
