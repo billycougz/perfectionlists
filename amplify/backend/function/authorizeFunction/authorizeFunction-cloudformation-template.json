@@ -109,6 +109,46 @@
                   "CLIENT_SECRET"
                 ]
               ]
+            },
+            "REDIRECT_URI": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Fn::Sub": [
+                      "/amplify/${appId}/${env}/AMPLIFY_${functionName}_",
+                      {
+                        "appId": "d3qpbjpyn5ti6o",
+                        "env": {
+                          "Ref": "env"
+                        },
+                        "functionName": "authorizeFunction"
+                      }
+                    ]
+                  },
+                  "REDIRECT_URI"
+                ]
+              ]
+            },
+            "FRONTEND_URI": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Fn::Sub": [
+                      "/amplify/${appId}/${env}/AMPLIFY_${functionName}_",
+                      {
+                        "appId": "d3qpbjpyn5ti6o",
+                        "env": {
+                          "Ref": "env"
+                        },
+                        "functionName": "authorizeFunction"
+                      }
+                    ]
+                  },
+                  "FRONTEND_URI"
+                ]
+              ]
             }
           }
         },
