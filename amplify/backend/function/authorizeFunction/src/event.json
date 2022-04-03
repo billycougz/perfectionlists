@@ -1,5 +1,147 @@
 {
-  "key1": "value1",
-  "key2": "value2",
-  "key3": "value3"
+  "resource": "/authorize/{proxy+}",
+  "path": "/authorize/login",
+  "httpMethod": "GET",
+  "headers": {
+      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+      "Accept-Encoding": "gzip, deflate, br",
+      "Accept-Language": "en-US,en;q=0.9",
+      "CloudFront-Forwarded-Proto": "https",
+      "CloudFront-Is-Desktop-Viewer": "true",
+      "CloudFront-Is-Mobile-Viewer": "false",
+      "CloudFront-Is-SmartTV-Viewer": "false",
+      "CloudFront-Is-Tablet-Viewer": "false",
+      "CloudFront-Viewer-Country": "US",
+      "Host": "keluld9g15.execute-api.us-east-1.amazonaws.com",
+      "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"99\", \"Google Chrome\";v=\"99\"",
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": "\"macOS\"",
+      "sec-fetch-dest": "document",
+      "sec-fetch-mode": "navigate",
+      "sec-fetch-site": "none",
+      "sec-fetch-user": "?1",
+      "upgrade-insecure-requests": "1",
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36",
+      "Via": "2.0 27f14fa3828b5a3937a29b10d6b5aa0e.cloudfront.net (CloudFront)",
+      "X-Amz-Cf-Id": "5HyQxFkQCdiJXZRer2mm7stC6D3ZUqfN3UDEHBRY_3bVIV3eLKs89Q==",
+      "X-Amzn-Trace-Id": "Root=1-6249fefa-4672b30c4ac3356f4eb809bd",
+      "X-Forwarded-For": "32.210.103.154, 130.176.10.157",
+      "X-Forwarded-Port": "443",
+      "X-Forwarded-Proto": "https"
+  },
+  "multiValueHeaders": {
+      "Accept": [
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+      ],
+      "Accept-Encoding": [
+          "gzip, deflate, br"
+      ],
+      "Accept-Language": [
+          "en-US,en;q=0.9"
+      ],
+      "CloudFront-Forwarded-Proto": [
+          "https"
+      ],
+      "CloudFront-Is-Desktop-Viewer": [
+          "true"
+      ],
+      "CloudFront-Is-Mobile-Viewer": [
+          "false"
+      ],
+      "CloudFront-Is-SmartTV-Viewer": [
+          "false"
+      ],
+      "CloudFront-Is-Tablet-Viewer": [
+          "false"
+      ],
+      "CloudFront-Viewer-Country": [
+          "US"
+      ],
+      "Host": [
+          "keluld9g15.execute-api.us-east-1.amazonaws.com"
+      ],
+      "sec-ch-ua": [
+          "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"99\", \"Google Chrome\";v=\"99\""
+      ],
+      "sec-ch-ua-mobile": [
+          "?0"
+      ],
+      "sec-ch-ua-platform": [
+          "\"macOS\""
+      ],
+      "sec-fetch-dest": [
+          "document"
+      ],
+      "sec-fetch-mode": [
+          "navigate"
+      ],
+      "sec-fetch-site": [
+          "none"
+      ],
+      "sec-fetch-user": [
+          "?1"
+      ],
+      "upgrade-insecure-requests": [
+          "1"
+      ],
+      "User-Agent": [
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36"
+      ],
+      "Via": [
+          "2.0 27f14fa3828b5a3937a29b10d6b5aa0e.cloudfront.net (CloudFront)"
+      ],
+      "X-Amz-Cf-Id": [
+          "5HyQxFkQCdiJXZRer2mm7stC6D3ZUqfN3UDEHBRY_3bVIV3eLKs89Q=="
+      ],
+      "X-Amzn-Trace-Id": [
+          "Root=1-6249fefa-4672b30c4ac3356f4eb809bd"
+      ],
+      "X-Forwarded-For": [
+          "32.210.103.154, 130.176.10.157"
+      ],
+      "X-Forwarded-Port": [
+          "443"
+      ],
+      "X-Forwarded-Proto": [
+          "https"
+      ]
+  },
+  "queryStringParameters": null,
+  "multiValueQueryStringParameters": null,
+  "pathParameters": {
+      "proxy": "login"
+  },
+  "stageVariables": null,
+  "requestContext": {
+      "resourceId": "ee17l6",
+      "resourcePath": "/authorize/{proxy+}",
+      "httpMethod": "GET",
+      "extendedRequestId": "QBTHIGSHoAMFz_Q=",
+      "requestTime": "03/Apr/2022:20:09:30 +0000",
+      "path": "/dev/authorize/login",
+      "accountId": "210534634664",
+      "protocol": "HTTP/1.1",
+      "stage": "dev",
+      "domainPrefix": "keluld9g15",
+      "requestTimeEpoch": 1649016570231,
+      "requestId": "1aa781a0-eedf-40cc-806d-e80384162522",
+      "identity": {
+          "cognitoIdentityPoolId": null,
+          "accountId": null,
+          "cognitoIdentityId": null,
+          "caller": null,
+          "sourceIp": "32.210.103.154",
+          "principalOrgId": null,
+          "accessKey": null,
+          "cognitoAuthenticationType": null,
+          "cognitoAuthenticationProvider": null,
+          "userArn": null,
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36",
+          "user": null
+      },
+      "domainName": "keluld9g15.execute-api.us-east-1.amazonaws.com",
+      "apiId": "keluld9g15"
+  },
+  "body": null,
+  "isBase64Encoded": false
 }

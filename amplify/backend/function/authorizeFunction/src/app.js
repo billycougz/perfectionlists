@@ -1,3 +1,17 @@
+/*
+Use the following code to retrieve configured secrets from SSM:
+
+const aws = require('aws-sdk');
+
+const { Parameters } = await (new aws.SSM())
+  .getParameters({
+    Names: ["CLIENT_ID","CLIENT_SECRET"].map(secretName => process.env[secretName]),
+    WithDecryption: true,
+  })
+  .promise();
+
+Parameters will be of the form { Name: 'secretName', Value: 'secretValue', ... }[]
+*/
 const express = require('express');
 const bodyParser = require('body-parser');
 const request = require('request');
@@ -32,9 +46,10 @@ const getSecrets = async () => {
 const AUTH_COOKIE_NAME = 'spotify-toolbox-auth';
 
 // Spotify Login - Request User Authorization
-app.get('/login', async (req, res) => {
+app.get('/authorize/login', async (req, res) => {
+  console.log('/login');
   const { CLIENT_ID, REDIRECT_URI } = await getSecrets();
-  const state = randomstring(16);
+  const state = randomstring.generate(16);
   const scope =
     'user-read-private user-read-email user-read-recently-played user-top-read user-follow-read user-follow-modify playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private';
   res.cookie(AUTH_COOKIE_NAME, state);
@@ -51,7 +66,8 @@ app.get('/login', async (req, res) => {
 });
 
 // Spotify Login Callback - Request Access Token
-app.get('/callback', async (req, res) => {
+app.get('/authorize/callback', async (req, res) => {
+  console.log('/callback');
   const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, FRONTEND_URI } = await getSecrets();
   const code = req.query.code || null;
   const state = req.query.state || null;
@@ -90,7 +106,8 @@ app.get('/callback', async (req, res) => {
 });
 
 // Spotify Refresh Token - Request a refreshed Access Token
-app.get('/refresh_token', async (req, res) => {
+app.get('/authorize/refresh_token', async (req, res) => {
+  console.log('/refresh_token');
   const { CLIENT_ID, CLIENT_SECRET } = await getSecrets();
   const refresh_token = req.query.refresh_token;
   const authOptions = {
