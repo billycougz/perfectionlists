@@ -32,7 +32,8 @@ const getSecrets = async () => {
 const AUTH_COOKIE_NAME = 'spotify-toolbox-auth';
 
 // Spotify Login - Request User Authorization
-app.get('/login', async (req, res) => {
+app.get('/authorize/login', async (req, res) => {
+  console.log('/login');
   const { CLIENT_ID, REDIRECT_URI } = await getSecrets();
   const state = randomstring(16);
   const scope =
@@ -51,7 +52,8 @@ app.get('/login', async (req, res) => {
 });
 
 // Spotify Login Callback - Request Access Token
-app.get('/callback', async (req, res) => {
+app.get('/authorize/callback', async (req, res) => {
+  console.log('/callback');
   const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, FRONTEND_URI } = await getSecrets();
   const code = req.query.code || null;
   const state = req.query.state || null;
@@ -90,7 +92,8 @@ app.get('/callback', async (req, res) => {
 });
 
 // Spotify Refresh Token - Request a refreshed Access Token
-app.get('/refresh_token', async (req, res) => {
+app.get('/authorize/refresh_token', async (req, res) => {
+  console.log('/refresh_token');
   const { CLIENT_ID, CLIENT_SECRET } = await getSecrets();
   const refresh_token = req.query.refresh_token;
   const authOptions = {
