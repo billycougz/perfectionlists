@@ -1,24 +1,28 @@
 import './App.css';
 import { useEffect, useState } from 'react';
-import { hasValidToken, handleLogout } from './api/auth';
+import { hasValidToken, handleLogout, getAuthUrl } from './api/auth';
+import GlobalStyle from './styles/GlobalStyle';
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(null);
+	const [loginUrl, setLoginUrl] = useState(null);
 
 	useEffect(() => {
-		const setIsLoggedInAsync = async () => setIsLoggedIn(await hasValidToken());
-		setIsLoggedInAsync();
+		const setAsyncValues = async () => {
+			setIsLoggedIn(await hasValidToken());
+			setLoginUrl(await getAuthUrl('login'));
+		};
+		setAsyncValues();
 	}, []);
 
 	return (
-		<div className='App'>
+		<>
+			<GlobalStyle />
 			{isLoggedIn === null && 'Loading'}
-			{isLoggedIn === false && (
-				<a href='https://keluld9g15.execute-api.us-east-1.amazonaws.com/dev/authorize/login'>Login</a>
-			)}
+			{isLoggedIn === false && <a href={loginUrl}>Login</a>}
 			{isLoggedIn && 'Welcome'}
 			{isLoggedIn && <button onClick={handleLogout}>Logout</button>}
-		</div>
+		</>
 	);
 }
 

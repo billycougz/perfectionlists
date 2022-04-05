@@ -1,8 +1,16 @@
 import axios from 'axios';
+import Amplify, { API } from 'aws-amplify';
+import awsconfig from '../aws-exports';
+Amplify.configure(awsconfig);
 
 const LOCAL_TOKEN = 'spotify-toolbox-token';
 const LOCAL_TIMESTAMP = 'spotify-toolbox-timestamp';
 const LOCAL_REFRESH = 'spotify-toolbox-refresh';
+
+export const getAuthUrl = async (resource) => {
+	const endpoint = await API.endpoint('authorizeApi');
+	return `${endpoint}/authorize/${resource}`;
+};
 
 export const hasValidToken = async () => {
 	const { access_token, refresh_token } = getHashParams();
@@ -41,9 +49,8 @@ const isTokenExpired = () => {
 const refreshAccessToken = async () => {
 	try {
 		const refreshToken = localStorage.getItem(LOCAL_REFRESH);
-		const { data } = await axios.get(
-			`https://keluld9g15.execute-api.us-east-1.amazonaws.com/dev/authorize/refresh_token?refresh_token=${refreshToken}`
-		);
+		const refreshTokenUrl = await getAuthUrl(`/refresh_token?refresh_token=${refreshToken}`);
+		const { data } = await axios.get(refreshTokenUrl);
 		const { access_token } = data;
 		localStorage.setItem(LOCAL_TOKEN, access_token);
 		localStorage.setItem(LOCAL_TIMESTAMP, Date.now());
