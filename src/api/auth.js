@@ -49,7 +49,7 @@ const isTokenExpired = () => {
 const refreshAccessToken = async () => {
 	try {
 		const refreshToken = localStorage.getItem(LOCAL_REFRESH);
-		const refreshTokenUrl = await getAuthUrl(`/refresh_token?refresh_token=${refreshToken}`);
+		const refreshTokenUrl = await getAuthUrl(`refresh_token?refresh_token=${refreshToken}`);
 		const { data } = await axios.get(refreshTokenUrl);
 		const { access_token } = data;
 		localStorage.setItem(LOCAL_TOKEN, access_token);
