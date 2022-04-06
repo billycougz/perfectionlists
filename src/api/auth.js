@@ -29,6 +29,7 @@ export const handleLogout = () => {
 	localStorage.removeItem(LOCAL_TIMESTAMP);
 	localStorage.removeItem(LOCAL_TOKEN);
 	localStorage.removeItem(LOCAL_REFRESH);
+	window.history.pushState(null, '', window.location.origin);
 	window.location.reload();
 };
 
