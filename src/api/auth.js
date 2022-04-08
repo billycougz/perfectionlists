@@ -14,10 +14,12 @@ export const getAuthUrl = async (resource) => {
 
 export const hasValidToken = async () => {
 	const { access_token, refresh_token } = getHashParams();
-	if (access_token && access_token !== localStorage.getItem(LOCAL_TOKEN)) {
+	if (access_token) {
 		localStorage.setItem(LOCAL_TOKEN, access_token);
 		localStorage.setItem(LOCAL_TIMESTAMP, Date.now());
 		localStorage.setItem(LOCAL_REFRESH, refresh_token);
+		window.history.pushState(null, '', window.location.origin);
+		window.location.reload();
 	}
 	if (localStorage.getItem(LOCAL_TOKEN)) {
 		return isTokenExpired() ? refreshAccessToken() : true;
@@ -29,7 +31,6 @@ export const handleLogout = () => {
 	localStorage.removeItem(LOCAL_TIMESTAMP);
 	localStorage.removeItem(LOCAL_TOKEN);
 	localStorage.removeItem(LOCAL_REFRESH);
-	window.history.pushState(null, '', window.location.origin);
 	window.location.reload();
 };
 
@@ -47,7 +48,7 @@ const isTokenExpired = () => {
 	return !timestamp || Date.now() - timestamp > 3600000;
 };
 
-const refreshAccessToken = async () => {
+export const refreshAccessToken = async () => {
 	try {
 		const refreshToken = localStorage.getItem(LOCAL_REFRESH);
 		const refreshTokenUrl = await getAuthUrl(`refresh_token?refresh_token=${refreshToken}`);

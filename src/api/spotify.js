@@ -1,14 +1,20 @@
 import axios from 'axios';
+import { handleLogout, refreshAccessToken } from './auth';
 
 // Private abstraction of axios to simplify Spotify API calls
-const spotify = async (url, method = 'get', postData) => {
+const spotify = async (url, method = 'get', postData, isRetry) => {
 	const token = localStorage.getItem('spotify-toolbox-token');
 	const headers = { Authorization: `Bearer ${token}` };
 	try {
 		const { data } = await axios({ url, method, headers, data: postData });
 		return data;
 	} catch (e) {
-		console.log(e);
+		if (!isRetry) {
+			await refreshAccessToken();
+			return spotify(url, method, postData, true);
+		} else {
+			handleLogout();
+		}
 	}
 };
 
