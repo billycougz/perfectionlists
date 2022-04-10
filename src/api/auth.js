@@ -3,34 +3,46 @@ import Amplify, { API } from 'aws-amplify';
 import awsconfig from '../aws-exports';
 Amplify.configure(awsconfig);
 
-const LOCAL_TOKEN = 'spotify-toolbox-token';
-const LOCAL_TIMESTAMP = 'spotify-toolbox-timestamp';
-const LOCAL_REFRESH = 'spotify-toolbox-refresh';
+const ACCESS_TOKEN = 'spotify-toolbox-token';
+const TOKEN_CREATED_AT = 'spotify-toolbox-timestamp';
+const REFRESH_TOKEN = 'spotify-toolbox-refresh';
+const REFRESH_DURATION = 3600000 - 300000; // 1 hour expiry less a 5 minute buffer
 
 export const getAuthUrl = async (resource) => {
 	const endpoint = await API.endpoint('authorizeApi');
 	return `${endpoint}/authorize/${resource}`;
 };
 
+const setRefreshTimeout = (refreshDuration = REFRESH_DURATION) => {
+	setTimeout(refreshAccessToken, refreshDuration);
+};
+
 export const hasValidToken = async () => {
 	const { access_token, refresh_token } = getHashParams();
 	if (access_token) {
-		localStorage.setItem(LOCAL_TOKEN, access_token);
-		localStorage.setItem(LOCAL_TIMESTAMP, Date.now());
-		localStorage.setItem(LOCAL_REFRESH, refresh_token);
+		localStorage.setItem(ACCESS_TOKEN, access_token);
+		localStorage.setItem(TOKEN_CREATED_AT, Date.now());
+		localStorage.setItem(REFRESH_TOKEN, refresh_token);
 		window.history.pushState(null, '', window.location.origin);
 		window.location.reload();
 	}
-	if (localStorage.getItem(LOCAL_TOKEN)) {
-		return isTokenExpired() ? refreshAccessToken() : true;
+	if (localStorage.getItem(ACCESS_TOKEN)) {
+		const timeElapsed = Date.now() - localStorage.getItem(TOKEN_CREATED_AT);
+		if (!timeElapsed || timeElapsed > REFRESH_DURATION) {
+			await refreshAccessToken();
+		} else {
+			const timeRemaining = REFRESH_DURATION - timeElapsed;
+			setRefreshTimeout(timeRemaining);
+		}
+		return true;
 	}
 	return false;
 };
 
 export const handleLogout = () => {
-	localStorage.removeItem(LOCAL_TIMESTAMP);
-	localStorage.removeItem(LOCAL_TOKEN);
-	localStorage.removeItem(LOCAL_REFRESH);
+	localStorage.removeItem(TOKEN_CREATED_AT);
+	localStorage.removeItem(ACCESS_TOKEN);
+	localStorage.removeItem(REFRESH_TOKEN);
 	window.location.reload();
 };
 
@@ -43,22 +55,16 @@ const getHashParams = () => {
 	}, {});
 };
 
-const isTokenExpired = () => {
-	const timestamp = localStorage.getItem(LOCAL_TIMESTAMP);
-	return !timestamp || Date.now() - timestamp > 3600000;
-};
-
 export const refreshAccessToken = async () => {
 	try {
-		const refreshToken = localStorage.getItem(LOCAL_REFRESH);
+		const refreshToken = localStorage.getItem(REFRESH_TOKEN);
 		const refreshTokenUrl = await getAuthUrl(`refresh_token?refresh_token=${refreshToken}`);
 		const { data } = await axios.get(refreshTokenUrl);
 		const { access_token } = data;
-		localStorage.setItem(LOCAL_TOKEN, access_token);
-		localStorage.setItem(LOCAL_TIMESTAMP, Date.now());
-		return true;
+		localStorage.setItem(ACCESS_TOKEN, access_token);
+		localStorage.setItem(TOKEN_CREATED_AT, Date.now());
+		setRefreshTimeout();
 	} catch (e) {
 		console.error(e);
-		return false;
 	}
 };
