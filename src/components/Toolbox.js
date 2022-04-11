@@ -8,6 +8,7 @@ import Choose from './Choose';
 import Settings from './Settings';
 
 const Main = styled.main`
+	overflow: hidden;
 	@media (min-width: 769px) {
 		padding-left: 250px;
 	}
