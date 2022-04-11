@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import BottomNav from './BottomNav';
 import SideNav from './SideNav';
-import { handleLogout } from '../api/auth';
 import Compare from './Compare';
 import { useEffect, useState } from 'react';
 import { getCurrentUser, getAlbum, getPlaylist } from '../api/spotify';
 import Choose from './Choose';
+import Settings from './Settings';
 
 const Main = styled.main`
 	@media (min-width: 769px) {
@@ -62,9 +62,9 @@ const Toolbox = () => {
 		<>
 			<SideNav />
 			<Main>
-				<Choose collections={collections} onCollectionUpdate={handleCollectionUpdate} />
-				<Compare user={user} collections={collections} />
-				<button onClick={handleLogout}>Logout</button>
+				{activeView === 'choose' && <Choose collections={collections} onCollectionUpdate={handleCollectionUpdate} />}
+				{activeView === 'compare' && <Compare user={user} collections={collections} />}
+				{activeView === 'settings' && <Settings user={user} />}
 			</Main>
 			<BottomNav onNavChange={setActiveView} activeView={activeView} />
 		</>
