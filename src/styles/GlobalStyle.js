@@ -4,6 +4,7 @@ import { normalize } from 'styled-normalize';
 const GlobalStyle = createGlobalStyle`
     ${normalize}
     body {
+        font-family: "Arial";
         background: rgb(18, 18, 18);
 	    color: white;
 	    height: 100%;

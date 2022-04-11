@@ -13,6 +13,7 @@ const Main = styled.main`
 `;
 
 const Toolbox = () => {
+	const [activeView, setActiveView] = useState('choose');
 	const [user, setUser] = useState(null);
 
 	useEffect(() => {
@@ -29,7 +30,7 @@ const Toolbox = () => {
 				<Compare user={user} />
 				<button onClick={handleLogout}>Logout</button>
 			</Main>
-			<BottomNav />
+			<BottomNav onNavChange={setActiveView} activeView={activeView} />
 		</>
 	);
 };
