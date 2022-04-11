@@ -1,43 +1,9 @@
 import { useState } from 'react';
-import { addTracksToPlaylist, getAlbum, getPlaylist } from '../../api/spotify';
+import { addTracksToPlaylist } from '../../api/spotify';
 
-const Compare = ({ user }) => {
-	const [collections, setCollections] = useState([]);
+const Compare = ({ user, collections, onCollectionUpdate }) => {
 	const [uniqueBy, setUniqueBy] = useState('id');
 	const [filterBy, setFilterBy] = useState('all');
-
-	const handleCollectionUpdate = async (index, url) => {
-		const { type, id } = parseUrl(url);
-		if (type && id) {
-			const collection = type === 'playlist' ? await getPlaylist(id) : await getAlbum(id);
-			const adaptedCollection = adaptCollection(collection, type);
-			collections[index] = adaptedCollection;
-			setCollections(collections.slice());
-		}
-	};
-
-	// Identifies the type (i.e. playlist or album) and id associated with a URL
-	const parseUrl = (url) => {
-		try {
-			const { pathname } = new URL(url);
-			const pathSegments = pathname.split('/');
-			const { length } = pathSegments;
-			const validTypes = ['playlist', 'album'];
-			const type = validTypes.includes(pathSegments[length - 2]) ? pathSegments[length - 2] : undefined;
-			const id = pathSegments[length - 1];
-			return { type, id };
-		} catch (e) {
-			return {};
-		}
-	};
-
-	// Adapts a collection so regardless of it's type it has the a common shape
-	const adaptCollection = (collection, type) => {
-		const { items } = collection.tracks;
-		const adaptedTracks =
-			type === 'playlist' ? items.map((item) => item.track) : items.map((item) => ({ ...item, album: collection }));
-		return { ...collection, tracks: adaptedTracks };
-	};
 
 	const getUniqueTracks = (uniqueTracks, collection) => {
 		const getUniqueId = (track) => (uniqueBy === 'id' ? track.id : `${track.name} : ${track.artists[0].name}`);
@@ -74,15 +40,11 @@ const Compare = ({ user }) => {
 	const handleAddTrack = async (playlist, trackUri) => {
 		await addTracksToPlaylist(playlist.id, [trackUri]);
 		const index = collections.findIndex((collection) => collection.id === playlist.id);
-		handleCollectionUpdate(index, playlist.external_urls.spotify);
+		onCollectionUpdate(index, playlist.external_urls.spotify);
 	};
 
 	return (
 		<>
-			{[0, 1].map((index) => (
-				<input key={index} onChange={(e) => handleCollectionUpdate(index, e.target.value)} />
-			))}
-
 			<input type='checkbox' onChange={(e) => setUniqueBy(e.target.checked ? 'nameAndArtist' : 'id')} />
 			<label>Consider tracks with same name and artist to be identical</label>
 			<br />
