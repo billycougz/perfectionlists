@@ -9,6 +9,7 @@ const GlobalStyle = createGlobalStyle`
 	    color: white;
 	    height: 100%;
 	    min-height: 100vh;
+        font-size: 14px;
     }
 `;
 

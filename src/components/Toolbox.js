@@ -10,7 +10,7 @@ import Settings from './Settings';
 const Main = styled.main`
 	overflow: hidden;
 	@media (min-width: 769px) {
-		padding-left: 250px;
+		padding-left: 245px;
 	}
 `;
 
@@ -61,7 +61,7 @@ const Toolbox = () => {
 
 	return (
 		<>
-			<SideNav />
+			<SideNav collections={collections} onPlaylistSelect={handleCollectionUpdate} />
 			<Main>
 				{activeView === 'choose' && <Choose collections={collections} onCollectionUpdate={handleCollectionUpdate} />}
 				{activeView === 'compare' && <Compare user={user} collections={collections} />}
