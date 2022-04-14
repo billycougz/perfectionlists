@@ -58,25 +58,27 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 				<option value='twoMissing'>{`Missing from ${collections[1]?.name}`}</option>
 			</select>
 
-			{collections
-				.reduce(getUniqueTracks, [])
-				.filter(filterTracks)
-				.map((track) => (
-					<div key={track.id}>
-						{track.name}
-						{collections.map((collection) => (
-							<span key={collection.id}>
-								{track.collections[collection.id] ? (
-									'✓'
-								) : collection?.owner?.id === user.id ? (
-									<button onClick={() => handleAddTrack(collection, track.uri)}>Add</button>
-								) : (
-									'✕'
-								)}
-							</span>
-						))}
-					</div>
-				))}
+			{collections[0] &&
+				collections[1] &&
+				collections
+					.reduce(getUniqueTracks, [])
+					.filter(filterTracks)
+					.map((track) => (
+						<div key={track.id}>
+							{track.name}
+							{collections.map((collection) => (
+								<span key={collection.id}>
+									{track.collections[collection.id] ? (
+										'✓'
+									) : collection?.owner?.id === user.id ? (
+										<button onClick={() => handleAddTrack(collection, track.uri)}>Add</button>
+									) : (
+										'✕'
+									)}
+								</span>
+							))}
+						</div>
+					))}
 		</>
 	);
 };
