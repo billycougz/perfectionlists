@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { getUserPlaylists } from '../../api/spotify';
 import SpotifyPNG from './spotify.png';
@@ -20,6 +20,11 @@ const StyledNav = styled.div`
 		max-width: 100%;
 		padding-bottom: 2em;
 	}
+	h2 {
+		margin-top: 0;
+		border-bottom: solid 1px;
+		padding-bottom: 5px;
+	}
 `;
 
 const PlaylistGrid = styled.div`
@@ -37,7 +42,14 @@ const Button = styled.button`
 	border-radius: 10px;
 	border-width: 1px;
 	background: ${(props) => (props.isActive ? colors.green : 'white')};
+	color: ${(props) => (props.isActive ? 'white' : 'black')};
 	cursor: pointer;
+	&:hover,
+	&:focus {
+		background: ${colors.green};
+		color: white;
+		outline: 0;
+	}
 `;
 
 const SideNav = ({ collections, onPlaylistSelect }) => {
@@ -60,19 +72,21 @@ const SideNav = ({ collections, onPlaylistSelect }) => {
 			<a href='https://open.spotify.com/search' target='_blank'>
 				<img src={SpotifyPNG} />
 			</a>
+			<h2>Your Library</h2>
 			<PlaylistGrid>
 				{playlists.map((playlist) => (
-					<>
+					<React.Fragment key={playlist.id}>
 						<span>{playlist.name}</span>
 						{['A', 'B'].map((side, index) => (
 							<Button
+								key={index}
 								isActive={isActive(index, playlist)}
 								onClick={() => onPlaylistSelect(index, playlist.external_urls.spotify)}
 							>
 								{side}
 							</Button>
 						))}
-					</>
+					</React.Fragment>
 				))}
 			</PlaylistGrid>
 		</StyledNav>
