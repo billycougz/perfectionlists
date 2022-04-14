@@ -7,11 +7,11 @@ import { colors } from '../../styles/theme';
 const StyledNav = styled.div`
 	background-color: rgb(0, 0, 0);
 	height: calc(100% - 100px);
-	width: 215px;
+	width: 205px;
 	position: fixed;
 	top: 0;
 	left: 0;
-	padding: 1em;
+	padding: 20px;
 	@media (max-width: 768px) {
 		display: none;
 	}
@@ -19,6 +19,12 @@ const StyledNav = styled.div`
 		width: 131px;
 		max-width: 100%;
 		padding-bottom: 2em;
+	}
+	#toolbox {
+		bottom: 38px;
+		left: 5px;
+		position: relative;
+		font-size: 18px;
 	}
 	h2 {
 		margin-top: 0;
@@ -72,6 +78,7 @@ const SideNav = ({ collections, onPlaylistSelect }) => {
 			<a href='https://open.spotify.com/search' target='_blank'>
 				<img src={SpotifyPNG} />
 			</a>
+			<span id='toolbox'>Toolbox</span>
 			<h2>Your Library</h2>
 			<PlaylistGrid>
 				{playlists.map((playlist) => (

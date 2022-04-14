@@ -9,15 +9,21 @@ import Settings from './Settings';
 
 const Main = styled.main`
 	overflow: hidden;
+	> h2 {
+		text-align: center;
+	}
 	@media (min-width: 769px) {
 		padding-left: 245px;
+		> h2 {
+			visibility: hidden;
+		}
 	}
 `;
 
 const Toolbox = () => {
 	const [activeView, setActiveView] = useState('choose');
 	const [user, setUser] = useState(null);
-	const [collections, setCollections] = useState([]);
+	const [collections, setCollections] = useState([null, null]);
 
 	useEffect(() => {
 		const setAsyncValues = async () => {
@@ -63,7 +69,14 @@ const Toolbox = () => {
 		<>
 			<SideNav collections={collections} onPlaylistSelect={handleCollectionUpdate} />
 			<Main>
-				{activeView === 'choose' && <Choose collections={collections} onCollectionUpdate={handleCollectionUpdate} />}
+				<h2>Spotify Toolbox</h2>
+				{activeView === 'choose' && (
+					<Choose
+						collections={collections}
+						onCollectionUpdate={handleCollectionUpdate}
+						onCompare={() => setActiveView('compare')}
+					/>
+				)}
 				{activeView === 'compare' && <Compare user={user} collections={collections} />}
 				{activeView === 'settings' && <Settings user={user} />}
 			</Main>
