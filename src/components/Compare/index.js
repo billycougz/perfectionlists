@@ -63,6 +63,7 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 				collections
 					.reduce(getUniqueTracks, [])
 					.filter(filterTracks)
+					.sort((a, b) => a.name.localeCompare(b.name))
 					.map((track) => (
 						<div key={track.id}>
 							{track.name}
