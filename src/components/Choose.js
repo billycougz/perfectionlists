@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { colors } from '../styles/theme';
+import Button from '../styles/Button';
 
 const Container = styled.div`
 	display: flex;
@@ -72,24 +72,6 @@ const AlignCenter = styled.div`
 	text-align: center;
 `;
 
-const Button = styled.a`
-	display: inline-block;
-	background: ${colors.green};
-	color: white;
-	font-weight: 700;
-	letter-spacing: 1px;
-	text-transform: uppercase;
-	border-radius: 50px;
-	padding: 11px 24px;
-	cursor: pointer;
-	&:hover,
-	&:focus {
-		background: white;
-		color: black;
-		outline: 0;
-	}
-`;
-
 const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 	const [inputValues, setInputValues] = useState(['', '']);
 
@@ -112,6 +94,8 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 					<p>
 						Select a playlist from your library or copy the <b>Share</b> link from any playlist or album on Spotify.
 					</p>
+					<p>See Library</p>
+					<p>Get from spotify</p>
 					<p>
 						To find a <b>Share</b> link on Spotify:
 					</p>
@@ -126,18 +110,23 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 							Select <b>Share</b> then <b>Copy Link</b>
 						</li>
 					</ul>
+					<Button white outline href='https://open.spotify.com/search' target='_blank'>
+						Open Spotify
+					</Button>
 				</TextBox>
 			</div>
 			<div>
 				<div>
 					{['A', 'B'].map((side, index) => (
-						<InputGroup key={index}>
+						<InputGroup key={index} isValid={collections[index]}>
 							<label>Side {side}</label>
 							<input
 								key={index}
 								onChange={(e) => handleInputChange(index, e.target.value)}
 								value={inputValues[index]}
 							/>
+							{collections[index] && <p>{collections[index].name}</p>}
+							{!collections[index] && inputValues[index] && <p>This link is not recognized</p>}
 						</InputGroup>
 					))}
 					<AlignCenter>
