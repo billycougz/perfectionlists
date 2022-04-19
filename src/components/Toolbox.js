@@ -15,7 +15,7 @@ const Main = styled.main`
 	@media (min-width: 769px) {
 		padding-left: 245px;
 		> h2 {
-			visibility: hidden;
+			display: none;
 		}
 	}
 `;
@@ -38,6 +38,9 @@ const Toolbox = () => {
 			const collection = type === 'playlist' ? await getPlaylist(id) : await getAlbum(id);
 			const adaptedCollection = adaptCollection(collection, type);
 			collections[index] = adaptedCollection;
+			setCollections(collections.slice());
+		} else if (collections[index] !== null) {
+			collections[index] = null;
 			setCollections(collections.slice());
 		}
 	};
@@ -77,7 +80,9 @@ const Toolbox = () => {
 						onCompare={() => setActiveView('compare')}
 					/>
 				)}
-				{activeView === 'compare' && <Compare user={user} collections={collections} />}
+				{activeView === 'compare' && (
+					<Compare user={user} collections={collections} onCollectionUpdate={handleCollectionUpdate} />
+				)}
 				{activeView === 'settings' && <Settings user={user} />}
 			</Main>
 			<BottomNav onNavChange={setActiveView} activeView={activeView} />
