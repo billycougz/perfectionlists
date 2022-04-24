@@ -73,6 +73,7 @@ const Suggestions = styled.div`
 const Link = styled.a`
 	font-weight: bold;
 	color: ${colors.green};
+	text-decoration: none;
 `;
 
 const AlignCenter = styled.div`
@@ -120,11 +121,19 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 		setSuggestions({});
 	};
 
+	const showSideNav = () => {
+		const sideNav = document.getElementById('side-nav');
+		sideNav.style.display = 'block';
+	};
+
 	return (
 		<Container>
 			<TextBox>
 				<h2>Choose two collections to compare.</h2>
-				<p>Select a playlist from your library or use the text boxes to search for a playlist or album.</p>
+				<p>
+					Select a playlist from <Link onClick={showSideNav}>Your Library</Link>&nbsp;or use the text boxes to search
+					for a playlist or album.
+				</p>
 				<p>
 					The text boxes can also accept the <i>share</i> link for any Spotify playlist or album.&nbsp;
 					<Link href='https://open.spotify.com/search' target='_blank'>

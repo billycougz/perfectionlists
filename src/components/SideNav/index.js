@@ -19,12 +19,18 @@ const StyledNav = styled.div`
 		width: 131px;
 		max-width: 100%;
 		padding-bottom: 2em;
+		@media (max-width: 768px) {
+			display: none;
+		}
 	}
 	#toolbox {
 		bottom: 38px;
 		left: 5px;
 		position: relative;
 		font-size: 18px;
+		@media (max-width: 768px) {
+			display: none;
+		}
 	}
 	h2 {
 		margin-top: 0;
@@ -39,6 +45,12 @@ const PlaylistGrid = styled.div`
 	gap: 1em;
 	overflow: scroll;
 	height: calc(100% - 110px);
+	scrollbar-width: none; /* Firefox */
+	&::-webkit-scrollbar {
+		/* WebKit */
+		width: 0;
+		height: 0;
+	}
 	span {
 		text-overflow: ellipsis;
 		overflow: hidden;
@@ -47,6 +59,10 @@ const PlaylistGrid = styled.div`
 `;
 
 const Button = styled.button`
+	@media (min-width: 769px) {
+		display: ${({ closeButton }) => (closeButton ? 'none' : 'initial')};
+	}
+	float: ${({ closeButton }) => (closeButton ? 'right' : 'initial')};
 	border-radius: 10px;
 	border-width: 1px;
 	background: ${(props) => (props.isActive ? colors.green : 'white')};
@@ -75,8 +91,16 @@ const SideNav = ({ collections, onPlaylistSelect }) => {
 		return collections[index] ? collections[index].external_urls.spotify === playlist.external_urls.spotify : false;
 	};
 
+	const hideSideNav = () => {
+		const sideNav = document.getElementById('side-nav');
+		sideNav.style.display = 'none';
+	};
+
 	return (
-		<StyledNav>
+		<StyledNav id='side-nav'>
+			<Button closeButton onClick={hideSideNav}>
+				Close
+			</Button>
 			<a href='https://open.spotify.com/search' target='_blank'>
 				<img src={SpotifyPNG} />
 			</a>
