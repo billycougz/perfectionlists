@@ -37,6 +37,8 @@ const PlaylistGrid = styled.div`
 	display: grid;
 	grid-template-columns: 10fr 1fr 1fr;
 	gap: 1em;
+	overflow: scroll;
+	height: calc(100% - 110px);
 	span {
 		text-overflow: ellipsis;
 		overflow: hidden;
