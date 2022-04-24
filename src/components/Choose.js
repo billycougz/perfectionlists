@@ -1,47 +1,38 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { getSearchResults } from '../api/spotify';
 import Button from '../styles/Button';
+import { colors } from '../styles/theme';
 
 const Container = styled.div`
-	display: flex;
-	flex-direction: row;
-	align-items: center;
 	height: calc(100vh - 140px);
-	@media (max-width: 1000px) {
-		flex-direction: column;
-		flex-basis: auto;
-		align-items: stretch;
+	margin: 2em;
+	@media (max-width: 768px) {
+		margin: 2em 1em;
 	}
 	> div {
-		flex-basis: 50%;
-		margin: 1em;
-		@media (max-width: 1000px) {
-			flex-basis: auto;
-		}
-		> div {
-			max-width: 450px;
-			margin: auto;
-			padding: 0 1em;
-		}
+		margin: 2em 0;
 	}
 `;
 
 const TextBox = styled.div`
-	h2 {
-		margin-top: 0;
-	}
-	li {
-		margin: 10px 0;
-	}
-	.icon {
-		position: relative;
-		bottom: 3px;
+	@media (max-width: 480px) {
+		background: white;
+		color: black;
+		padding: 1px 10px;
+		border-radius: 10px;
 	}
 `;
 
+const CollectionGroup = styled.div`
+	margin: 2em 0;
+`;
+
 const InputGroup = styled.div`
-	height: 100px;
+	max-width: 400px;
+	margin: auto;
 	label {
+		font-size: 1.25em;
 		display: block;
 		padding-bottom: 5px;
 	}
@@ -56,16 +47,32 @@ const InputGroup = styled.div`
 		box-sizing: border-box;
 		padding: 0 12px;
 	}
-	p {
-		font-size: 11px;
-		color: white;
-		margin: 5px 0 5px 0;
-		&:before {
-			color: ${({ isValid }) => (isValid ? 'green' : 'red')};
-			content: ${({ isValid }) => (isValid ? '"✓"' : '"✕"')};
-			margin-right: 10px;
+`;
+
+const Suggestions = styled.div`
+	margin: 1em 0;
+	label {
+		display: block;
+		padding-bottom: 5px;
+	}
+	> div {
+		white-space: nowrap;
+		overflow: scroll;
+		> div {
+			width: 128px;
+			display: inline-block;
+			margin: 0 20px 0 0;
+			> p {
+				text-overflow: ellipsis;
+				overflow: hidden;
+			}
 		}
 	}
+`;
+
+const Link = styled.a`
+	font-weight: bold;
+	color: ${colors.green};
 `;
 
 const AlignCenter = styled.div`
@@ -74,66 +81,95 @@ const AlignCenter = styled.div`
 
 const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 	const [inputValues, setInputValues] = useState(['', '']);
+	const [searchTimeout, setSearchTimeout] = useState(null);
+	const [suggestions, setSuggestions] = useState({});
 
 	useEffect(() => {
-		const urls = collections.map((collection) => collection?.external_urls.spotify || '');
-		setInputValues(urls);
+		const collectionNames = collections.map((collection) => collection?.name || '');
+		setInputValues(collectionNames);
+		clearTimeout(searchTimeout);
+		setSuggestions({});
 	}, [collections]);
 
-	const handleInputChange = (index, value) => {
+	const handleInputChange = async (index, value) => {
+		console.log(value);
 		inputValues[index] = value;
 		setInputValues(inputValues.slice());
 		onCollectionUpdate(index, value);
+		clearTimeout(searchTimeout);
+		if (value) {
+			const timeout = setTimeout(async () => {
+				const { albums, playlists } = await getSearchResults(value);
+				suggestions.collectionIndex = index;
+				suggestions.types = [
+					{ type: 'Playlists', items: playlists.items },
+					{ type: 'Albums', items: albums.items },
+				];
+				setSuggestions({ ...suggestions });
+			}, 275);
+			setSearchTimeout(timeout);
+		} else {
+			setSuggestions({});
+		}
+	};
+
+	const handleSuggestionClick = (index, suggestion) => {
+		inputValues[index] = suggestion.name;
+		onCollectionUpdate(index, suggestion.external_urls.spotify);
+		setInputValues(inputValues.slice());
+		setSuggestions({});
 	};
 
 	return (
 		<Container>
-			<div>
-				<TextBox>
-					<h2>Choose the collections to compare.</h2>
-					<p>
-						Select a playlist from your library or copy the <b>Share</b> link from any playlist or album on Spotify.
-					</p>
-					<p>See Library</p>
-					<p>Get from spotify</p>
-					<p>
-						To find a <b>Share</b> link on Spotify:
-					</p>
-					<ul>
-						<li>
-							Open a playlist or album in <b>Spotify</b>
-						</li>
-						<li>
-							Click the <b className='icon'>...</b> icon
-						</li>
-						<li>
-							Select <b>Share</b> then <b>Copy Link</b>
-						</li>
-					</ul>
-					<Button white outline href='https://open.spotify.com/search' target='_blank'>
+			<TextBox>
+				<h2>Choose two collections to compare.</h2>
+				<p>Select a playlist from your library or use the text boxes to search for a playlist or album.</p>
+				<p>
+					The text boxes can also accept the <i>share</i> link for any Spotify playlist or album.&nbsp;
+					<Link href='https://open.spotify.com/search' target='_blank'>
 						Open Spotify
-					</Button>
-				</TextBox>
-			</div>
+					</Link>
+					&nbsp;to obtain a link.
+				</p>
+			</TextBox>
 			<div>
-				<div>
-					{['A', 'B'].map((side, index) => (
-						<InputGroup key={index} isValid={collections[index]}>
+				{['A', 'B'].map((side, index) => (
+					<CollectionGroup key={index} isValid={collections[index]}>
+						<InputGroup>
 							<label>Side {side}</label>
 							<input
+								placeholder='Search or paste a link...'
 								key={index}
 								onChange={(e) => handleInputChange(index, e.target.value)}
 								value={inputValues[index]}
 							/>
-							{collections[index] && <p>{collections[index].name}</p>}
-							{!collections[index] && inputValues[index] && <p>This link is not recognized</p>}
 						</InputGroup>
-					))}
-					<AlignCenter>
-						<Button onClick={onCompare}>Compare</Button>
-					</AlignCenter>
-				</div>
+
+						{suggestions.collectionIndex === index &&
+							suggestions.types.map(({ type, items }) => (
+								<Suggestions>
+									<label>{type}</label>
+									<div>
+										{items.map((suggestion) => (
+											<div>
+												<img
+													height='128px'
+													onClick={() => handleSuggestionClick(index, suggestion)}
+													src={suggestion.images[0].url}
+												/>
+												<p>{suggestion.name}</p>
+											</div>
+										))}
+									</div>
+								</Suggestions>
+							))}
+					</CollectionGroup>
+				))}
 			</div>
+			<AlignCenter>
+				<Button onClick={onCompare}>Compare</Button>
+			</AlignCenter>
 		</Container>
 	);
 };
