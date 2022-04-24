@@ -44,3 +44,7 @@ export const addTracksToPlaylist = (playlistId, uris) => {
 	const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks?uris=${uris}`;
 	return spotify(url, 'post');
 };
+
+export const getSearchResults = (searchValue) => {
+	return spotify(`https://api.spotify.com/v1/search?type=album,playlist&q=${searchValue}`);
+};
