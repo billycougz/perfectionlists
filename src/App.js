@@ -20,8 +20,21 @@ function App() {
 		<>
 			<GlobalStyle />
 			{isLoggedIn === null && 'Loading'}
-			{isLoggedIn === false && <a href={loginUrl}>Login</a>}
 			{isLoggedIn === true && <Toolbox />}
+
+			{isLoggedIn === false && <a href={loginUrl}>Login</a>}
+			{isLoggedIn === false && (
+				<>
+					<p>
+						Spotify provides a platform that helps creators like Music Artists and Podcaststers bring their work to
+						their fans.
+					</p>
+					<p>
+						Playlist Studio provides a platform that helps Spotify users like you compose and share creative works of
+						your own - playlists.
+					</p>
+				</>
+			)}
 		</>
 	);
 }
