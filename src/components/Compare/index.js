@@ -1,5 +1,49 @@
 import { useState } from 'react';
 import { addTracksToPlaylist } from '../../api/spotify';
+import styled from 'styled-components';
+
+const ViewContainer = styled.div`
+	margin: 1em;
+`;
+
+const CompareRow = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	display: grid;
+	grid-template-columns: 7fr 1fr 1fr;
+	border-bottom: 1px solid #2b2b2b;
+	padding: ${({ headers }) => (headers ? '1em 0' : 'inherit')};
+	color: ${({ headers }) => (headers ? '#808081' : 'inherit')};
+`;
+
+const Container = styled.div`
+	display: flex;
+	align-items: center;
+	padding: 1em 0;
+	white-space: nowrap;
+	overflow: hidden;
+`;
+
+const SideStatus = styled.div`
+	text-align: center;
+`;
+
+const Image = styled.img`
+	padding-right: 1em;
+	height: 40px;
+`;
+
+const TrackDetail = styled.div`
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	> div {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+`;
 
 const Compare = ({ user, collections, onCollectionUpdate }) => {
 	const [uniqueBy, setUniqueBy] = useState('id');
@@ -44,7 +88,7 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 	};
 
 	return (
-		<>
+		<ViewContainer>
 			<input type='checkbox' onChange={(e) => setUniqueBy(e.target.checked ? 'nameAndArtist' : 'id')} />
 			<label>Consider tracks with same name and artist to be identical</label>
 			<br />
@@ -58,29 +102,46 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 				<option value='twoMissing'>{`Missing from ${collections[1]?.name}`}</option>
 			</select>
 
-			{collections[0] &&
-				collections[1] &&
-				collections
-					.reduce(getUniqueTracks, [])
-					.filter(filterTracks)
-					.sort((a, b) => a.name.localeCompare(b.name))
-					.map((track) => (
-						<div key={track.id}>
-							{track.name}
-							{collections.map((collection) => (
-								<span key={collection.id}>
-									{track.collections[collection.id] ? (
-										'✓'
-									) : collection?.owner?.id === user.id ? (
-										<button onClick={() => handleAddTrack(collection, track.uri)}>Add</button>
-									) : (
-										'✕'
-									)}
-								</span>
-							))}
-						</div>
-					))}
-		</>
+			{collections[0] && collections[1] && (
+				<div>
+					<CompareRow headers>
+						<span>TRACK</span>
+						<SideStatus>
+							<span>A</span>
+						</SideStatus>
+						<SideStatus>
+							<span>B</span>
+						</SideStatus>
+					</CompareRow>
+					{collections
+						.reduce(getUniqueTracks, [])
+						.filter(filterTracks)
+						.sort((a, b) => a.name.localeCompare(b.name))
+						.map((track) => (
+							<CompareRow key={track.id}>
+								<Container>
+									<Image height='60px' src={track.album.images[0].url} />
+									<TrackDetail>
+										<div>{track.name}</div>
+										<div>{track.artists[0].name}</div>
+									</TrackDetail>
+								</Container>
+								{collections.map((collection) => (
+									<SideStatus key={collection.id}>
+										{track.collections[collection.id] ? (
+											'✓'
+										) : collection?.owner?.id === user.id ? (
+											<button onClick={() => handleAddTrack(collection, track.uri)}>Add</button>
+										) : (
+											'✕'
+										)}
+									</SideStatus>
+								))}
+							</CompareRow>
+						))}
+				</div>
+			)}
+		</ViewContainer>
 	);
 };
 
