@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { addTracksToPlaylist } from '../../api/spotify';
 import styled from 'styled-components';
+import { colors } from '../../styles/theme';
 
 const ViewContainer = styled.div`
 	margin: 1em;
@@ -13,8 +14,14 @@ const CompareRow = styled.div`
 	display: grid;
 	grid-template-columns: 7fr 1fr 1fr;
 	border-bottom: 1px solid #2b2b2b;
-	padding: ${({ headers }) => (headers ? '1em 0' : 'inherit')};
-	color: ${({ headers }) => (headers ? '#808081' : 'inherit')};
+`;
+
+const CompareHeaders = styled(CompareRow)`
+	padding: 1em 0;
+	color: #808081;
+	position: sticky;
+	top: 225px;
+	background: ${colors.backgroundBlack};
 `;
 
 const Container = styled.div`
@@ -31,7 +38,7 @@ const SideStatus = styled.div`
 
 const Image = styled.img`
 	padding-right: 1em;
-	height: 40px;
+	height: 60px;
 `;
 
 const TrackDetail = styled.div`
@@ -44,6 +51,30 @@ const TrackDetail = styled.div`
 		text-overflow: ellipsis;
 	}
 `;
+
+const PlaylistSummaryGroup = styled.div`
+	display: flex;
+	justify-content: space-around;
+	padding: 1em 0;
+	position: sticky;
+	top: 0;
+	background: ${colors.backgroundBlack};
+`;
+
+const PlaylistSummary = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-around;
+	> img {
+		height: 152px;
+	}
+	> div {
+		padding-top: 10px;
+	}
+`;
+
+const ShowOptions = styled.select``;
 
 const Compare = ({ user, collections, onCollectionUpdate }) => {
 	const [uniqueBy, setUniqueBy] = useState('id');
@@ -94,17 +125,27 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 			<br />
 
 			<label>Show</label>
-			<select onChange={(e) => setFilterBy(e.target.value)} value={filterBy}>
+			<ShowOptions onChange={(e) => setFilterBy(e.target.value)} value={filterBy}>
 				<option value='all'>All Tracks</option>
 				<option value='oneOnly'>{collections[0]?.name}</option>
 				<option value='twoOnly'>{collections[1]?.name}</option>
 				<option value='oneMissing'>{`Missing from ${collections[0]?.name}`}</option>
 				<option value='twoMissing'>{`Missing from ${collections[1]?.name}`}</option>
-			</select>
+			</ShowOptions>
+
+			<PlaylistSummaryGroup>
+				{collections.map((collection, index) => (
+					<PlaylistSummary>
+						<img src={collection.images[0].url} />
+						<div>{collection.name}</div>
+						<div>Side {index ? 'B' : 'A'}</div>
+					</PlaylistSummary>
+				))}
+			</PlaylistSummaryGroup>
 
 			{collections[0] && collections[1] && (
 				<div>
-					<CompareRow headers>
+					<CompareHeaders>
 						<span>TRACK</span>
 						<SideStatus>
 							<span>A</span>
@@ -112,7 +153,7 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 						<SideStatus>
 							<span>B</span>
 						</SideStatus>
-					</CompareRow>
+					</CompareHeaders>
 					{collections
 						.reduce(getUniqueTracks, [])
 						.filter(filterTracks)
@@ -120,7 +161,7 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 						.map((track) => (
 							<CompareRow key={track.id}>
 								<Container>
-									<Image height='60px' src={track.album.images[0].url} />
+									<Image src={track.album.images[0].url} />
 									<TrackDetail>
 										<div>{track.name}</div>
 										<div>{track.artists[0].name}</div>

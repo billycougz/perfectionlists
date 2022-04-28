@@ -8,7 +8,6 @@ import Choose from './Choose';
 import Settings from './Settings';
 
 const Main = styled.main`
-	overflow: hidden;
 	> h2 {
 		text-align: center;
 	}
