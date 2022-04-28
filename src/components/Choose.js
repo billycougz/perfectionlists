@@ -129,7 +129,7 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 	return (
 		<Container>
 			<TextBox>
-				<h2>Choose two collections to compare.</h2>
+				<h2>Choose two collections.</h2>
 				<p>
 					Select a playlist from <Link onClick={showSideNav}>Your Library</Link>&nbsp;or use the text boxes to search
 					for a playlist or album.
