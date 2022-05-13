@@ -1,5 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const request = require('request');
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware');
 const aws = require('aws-sdk');
@@ -9,12 +11,9 @@ const randomstring = require('randomstring');
 // Setup express
 const app = express();
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(awsServerlessExpressMiddleware.eventContext());
-app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', '*');
-  next();
-});
+app.use(cors());
 app.listen(3000, function () {
   console.log('App started');
 });
