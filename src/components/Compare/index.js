@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { addTracksToPlaylist } from '../../api/spotify';
+import { addTracksToPlaylist, createPlaylist } from '../../api/spotify';
 import styled from 'styled-components';
 import { colors } from '../../styles/theme';
 
@@ -18,7 +18,7 @@ const CompareRow = styled.div`
 
 const CompareHeaders = styled(CompareRow)`
 	padding: 1em 0;
-	color: #808081;
+	color: ${colors.textGray};
 	position: sticky;
 	top: 225px;
 	background: ${colors.backgroundBlack};
@@ -49,6 +49,9 @@ const TrackDetail = styled.div`
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		:nth-child(2) {
+			color: ${colors.textGray};
+		}
 	}
 `;
 
@@ -71,13 +74,53 @@ const PlaylistSummary = styled.div`
 	}
 	> div {
 		padding-top: 10px;
+		:nth-child(3) {
+			color: ${colors.textGray};
+		}
 	}
 `;
 
-const ShowOptions = styled.select``;
+const OptionsContainer = styled.div`
+	display: flex;
+	justify-content: flex-start;
+`;
+
+const FilterSelect = styled.select`
+	background: rgba(255, 255, 255, 0.1);
+	text-align: center;
+	color: white;
+	padding: 5px;
+	border-radius: 5px;
+	margin-right: 5px;
+`;
+
+const ForkButton = styled.button`
+	background: rgba(255, 255, 255, 0.1);
+	text-align: center;
+	color: white;
+	padding: 6px 15px;
+	border-radius: 5px;
+	border: solid 1px gray;
+	@media (max-width: 768px) {
+		width: 100%;
+	}
+`;
+
+const AddButton = styled.button`
+	background: rgba(255, 255, 255, 0.1);
+	text-align: center;
+	color: white;
+	padding: 4px 6px;
+	border-radius: 5px;
+	border: solid 1px gray;
+	@media (max-width: 768px) {
+		width: 100%;
+	}
+`;
 
 const Compare = ({ user, collections, onCollectionUpdate }) => {
-	const [uniqueBy, setUniqueBy] = useState('id');
+	// Defaulting uniqueBy to name/artist and have removed the option from the UI for now
+	const [uniqueBy, setUniqueBy] = useState('nameAndArtist');
 	const [filterBy, setFilterBy] = useState('all');
 
 	const getUniqueTracks = (uniqueTracks, collection) => {
@@ -118,20 +161,37 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 		onCollectionUpdate(index, playlist.external_urls.spotify);
 	};
 
+	const handleForkClick = async () => {
+		const filterByMap = {
+			all: 'all tracks',
+			oneOnly: collections[0].name,
+			twoOnly: collections[1].name,
+			oneMissing: `tracks missing from ${collections[0].name}`,
+			twoMissing: `tracks missing from ${collections[1].name}`,
+		};
+		const playlistName = window.prompt(
+			`This will copy ${filterByMap[filterBy]} into a new playlist.`,
+			'New Playlist Name'
+		);
+		if (playlistName) {
+			const trackUris = collections
+				.reduce(getUniqueTracks, [])
+				.filter(filterTracks)
+				.sort((a, b) => a.name.localeCompare(b.name))
+				.map((track) => track.uri);
+			const newPlaylist = await createPlaylist(user.id, playlistName);
+			await addTracksToPlaylist(newPlaylist.id, trackUris);
+		}
+	};
+
 	return (
 		<ViewContainer>
-			<input type='checkbox' onChange={(e) => setUniqueBy(e.target.checked ? 'nameAndArtist' : 'id')} />
-			<label>Consider tracks with same name and artist to be identical</label>
-			<br />
-
-			<label>Show</label>
-			<ShowOptions onChange={(e) => setFilterBy(e.target.value)} value={filterBy}>
-				<option value='all'>All Tracks</option>
-				<option value='oneOnly'>{collections[0]?.name}</option>
-				<option value='twoOnly'>{collections[1]?.name}</option>
-				<option value='oneMissing'>{`Missing from ${collections[0]?.name}`}</option>
-				<option value='twoMissing'>{`Missing from ${collections[1]?.name}`}</option>
-			</ShowOptions>
+			{false && (
+				<>
+					<label>Consider tracks with same name and artist to be identical</label>
+					<input type='checkbox' onChange={(e) => setUniqueBy(e.target.checked ? 'nameAndArtist' : 'id')} />
+				</>
+			)}
 
 			<PlaylistSummaryGroup>
 				{collections.map((collection, index) => (
@@ -142,6 +202,17 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 					</PlaylistSummary>
 				))}
 			</PlaylistSummaryGroup>
+
+			<OptionsContainer>
+				<FilterSelect onChange={(e) => setFilterBy(e.target.value)} value={filterBy}>
+					<option value='all'>All Tracks</option>
+					<option value='oneOnly'>{collections[0]?.name}</option>
+					<option value='twoOnly'>{collections[1]?.name}</option>
+					<option value='oneMissing'>{`Missing from ${collections[0]?.name}`}</option>
+					<option value='twoMissing'>{`Missing from ${collections[1]?.name}`}</option>
+				</FilterSelect>
+				<ForkButton onClick={handleForkClick}>Fork</ForkButton>
+			</OptionsContainer>
 
 			{collections[0] && collections[1] && (
 				<div>
@@ -172,7 +243,7 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 										{track.collections[collection.id] ? (
 											'✓'
 										) : collection?.owner?.id === user.id ? (
-											<button onClick={() => handleAddTrack(collection, track.uri)}>Add</button>
+											<AddButton onClick={() => handleAddTrack(collection, track.uri)}>Add</AddButton>
 										) : (
 											'✕'
 										)}
