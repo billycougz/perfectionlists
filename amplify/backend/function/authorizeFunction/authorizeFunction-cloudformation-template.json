@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Lambda Function resource stack creation using Amplify CLI",
+  "Description": "{\"createdOn\":\"Linux\",\"createdBy\":\"Amplify\",\"createdWith\":\"8.2.0\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
   "Parameters": {
     "CloudWatchRule": {
       "Type": "String",
@@ -81,7 +81,9 @@
                     "Fn::Sub": [
                       "/amplify/${appId}/${env}/AMPLIFY_${functionName}_",
                       {
-                        "appId": "d3qpbjpyn5ti6o",
+                        "appId": {
+                          "Ref": "secretsPathAmplifyAppId"
+                        },
                         "env": {
                           "Ref": "env"
                         },
@@ -101,7 +103,9 @@
                     "Fn::Sub": [
                       "/amplify/${appId}/${env}/AMPLIFY_${functionName}_",
                       {
-                        "appId": "d3qpbjpyn5ti6o",
+                        "appId": {
+                          "Ref": "secretsPathAmplifyAppId"
+                        },
                         "env": {
                           "Ref": "env"
                         },
@@ -121,7 +125,9 @@
                     "Fn::Sub": [
                       "/amplify/${appId}/${env}/AMPLIFY_${functionName}_",
                       {
-                        "appId": "d3qpbjpyn5ti6o",
+                        "appId": {
+                          "Ref": "secretsPathAmplifyAppId"
+                        },
                         "env": {
                           "Ref": "env"
                         },
@@ -141,7 +147,9 @@
                     "Fn::Sub": [
                       "/amplify/${appId}/${env}/AMPLIFY_${functionName}_",
                       {
-                        "appId": "d3qpbjpyn5ti6o",
+                        "appId": {
+                          "Ref": "secretsPathAmplifyAppId"
+                        },
                         "env": {
                           "Ref": "env"
                         },
@@ -283,7 +291,9 @@
                       "Fn::Sub": [
                         "/amplify/${appId}/${env}/AMPLIFY_${functionName}_",
                         {
-                          "appId": "d3qpbjpyn5ti6o",
+                          "appId": {
+                            "Ref": "secretsPathAmplifyAppId"
+                          },
                           "env": {
                             "Ref": "env"
                           },
