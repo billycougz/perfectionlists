@@ -104,6 +104,12 @@ app.get('/authorize/callback', async (req, res) => {
 			if (!error && response.statusCode === 200) {
 				const access_token = body.access_token;
 				const refresh_token = body.refresh_token;
+				console.log(
+					`${frontend_uri}/#${querystring.stringify({
+						access_token,
+						refresh_token,
+					})}`
+				);
 				res.redirect(
 					`${frontend_uri}/#${querystring.stringify({
 						access_token,
