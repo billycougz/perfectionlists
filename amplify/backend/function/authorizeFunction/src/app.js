@@ -83,9 +83,7 @@ app.get('/authorize/callback', async (req, res) => {
 	console.log('state', state);
 	const storedState = req.cookies ? req.cookies[AUTH_COOKIE_NAME] : null;
 	console.log('storedState', storedState);
-	// ToDo: Replace false - it's being used to temporarily disable this condition
-	// Replacement: state === null || state !== storedState
-	if (false) {
+	if (state === null || state !== storedState) {
 		res.redirect('/#' + querystring.stringify({ error: 'state_mismatch' }));
 	} else {
 		const authOptions = {
@@ -100,10 +98,9 @@ app.get('/authorize/callback', async (req, res) => {
 			},
 			json: true,
 		};
-		console.log(authOptions.headers.Authorization);
 		res.clearCookie(AUTH_COOKIE_NAME);
 		request.post(authOptions, function (error, response, body) {
-			console.log('error', error);
+			console.log('response', response);
 			if (!error && response.statusCode === 200) {
 				const access_token = body.access_token;
 				const refresh_token = body.refresh_token;
