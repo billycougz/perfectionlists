@@ -80,9 +80,7 @@ app.get('/authorize/callback', async (req, res) => {
 	]);
 	const code = req.query.code || null;
 	const state = req.query.state || null;
-	console.log('state', state);
 	const storedState = req.cookies ? req.cookies[AUTH_COOKIE_NAME] : null;
-	console.log('storedState', storedState);
 	if (state === null || state !== storedState) {
 		res.redirect('/#' + querystring.stringify({ error: 'state_mismatch' }));
 	} else {
@@ -100,16 +98,9 @@ app.get('/authorize/callback', async (req, res) => {
 		};
 		res.clearCookie(AUTH_COOKIE_NAME);
 		request.post(authOptions, function (error, response, body) {
-			console.log('response', response);
 			if (!error && response.statusCode === 200) {
 				const access_token = body.access_token;
 				const refresh_token = body.refresh_token;
-				console.log(
-					`${frontend_uri}/#${querystring.stringify({
-						access_token,
-						refresh_token,
-					})}`
-				);
 				res.redirect(
 					`${frontend_uri}/#${querystring.stringify({
 						access_token,
