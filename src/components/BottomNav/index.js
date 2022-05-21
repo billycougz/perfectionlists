@@ -39,19 +39,14 @@ const NavItem = styled.div`
 `;
 
 const BottomNav = ({ activeView, onNavChange }) => {
+	const isChooseCompare = ['choose', 'compare'].some((view) => view === activeView);
 	return (
 		<StyledNav>
-			<NavItem active={activeView === 'choose'} onClick={() => onNavChange('choose')}>
+			<NavItem active={isChooseCompare} onClick={() => onNavChange('choose')}>
 				<img src={ChooseSVG} />
-				<span>Choose</span>
-			</NavItem>
-			<NavItem active={activeView === 'compare'} onClick={() => onNavChange('compare')}>
-				<img src={CompareSVG} />
-				<span>Compare</span>
 			</NavItem>
 			<NavItem active={activeView === 'settings'} onClick={() => onNavChange('settings')}>
 				<img src={SettingsSVG} />
-				<span>Settings</span>
 			</NavItem>
 		</StyledNav>
 	);

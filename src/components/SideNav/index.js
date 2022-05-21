@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { getUserPlaylists } from '../../api/spotify';
-import SpotifyPNG from './spotify.png';
 import { colors } from '../../styles/theme';
 
 const StyledNav = styled.div`
@@ -15,27 +14,17 @@ const StyledNav = styled.div`
 	@media (max-width: 768px) {
 		display: none;
 	}
-	img {
-		width: 131px;
-		max-width: 100%;
-		padding-bottom: 2em;
-		@media (max-width: 768px) {
-			display: none;
+	> h1 {
+		margin-top: 0;
+		> :nth-child(2) {
+			font-weight: 100;
 		}
 	}
-	#toolbox {
-		bottom: 38px;
-		left: 5px;
-		position: relative;
-		font-size: 18px;
-		@media (max-width: 768px) {
-			display: none;
-		}
-	}
-	h2 {
+	> h2 {
 		margin-top: 0;
 		border-bottom: solid 1px;
 		padding-bottom: 5px;
+		font-size: 20px;
 	}
 `;
 
@@ -101,10 +90,10 @@ const SideNav = ({ collections, onPlaylistSelect }) => {
 			<Button closeButton onClick={hideSideNav}>
 				Close
 			</Button>
-			<a href='https://open.spotify.com/search' target='_blank'>
-				<img src={SpotifyPNG} />
-			</a>
-			<span id='toolbox'>Toolbox</span>
+			<h1>
+				<span>Perfection</span>
+				<span>lists</span>
+			</h1>
 			<h2>Your Library</h2>
 			<PlaylistGrid>
 				{playlists.map((playlist) => (
