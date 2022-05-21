@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 import { handleLogout } from '../api/auth';
+import Button from '../styles/Button';
 import { colors } from '../styles/theme';
 
 const Container = styled.div`
 	margin: 2em;
+	text-align: center;
 `;
 
 const Link = styled.a`
@@ -23,7 +25,9 @@ const Settings = ({ user }) => (
 		<br />
 		<hr />
 		<br />
-		<button onClick={handleLogout}>Logout</button>
+		<Button small onClick={handleLogout}>
+			Logout
+		</Button>
 	</Container>
 );
 

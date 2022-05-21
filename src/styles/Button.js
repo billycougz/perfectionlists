@@ -30,7 +30,7 @@ const Button = styled.a`
 	letter-spacing: 1px;
 	text-transform: uppercase;
 	border-radius: 50px;
-	padding: 11px 24px;
+	padding: ${({ small }) => (small ? '5px 10px' : '11px 24px')};
 	cursor: pointer;
 	&:hover,
 	&:focus {
