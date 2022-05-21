@@ -9,6 +9,7 @@ import Settings from './Settings';
 
 const Main = styled.main`
 	> h2 {
+		padding-top: 5px;
 		text-align: center;
 	}
 	@media (min-width: 769px) {
@@ -17,6 +18,14 @@ const Main = styled.main`
 			display: none;
 		}
 	}
+`;
+
+const BackArrow = styled.button`
+	font-size: 2em;
+	position: absolute;
+	background: none;
+	color: white;
+	border: none;
 `;
 
 const Toolbox = () => {
@@ -67,11 +76,17 @@ const Toolbox = () => {
 		return { ...collection, tracks: adaptedTracks };
 	};
 
+	const handleNavChange = (view) => {
+		setActiveView(view);
+		window.scrollTo(0, 0);
+	};
+
 	return (
 		<>
 			<SideNav collections={collections} onPlaylistSelect={handleCollectionUpdate} />
 			<Main>
-				<h2>Spotify Toolbox</h2>
+				{activeView === 'compare' && <BackArrow onClick={() => handleNavChange('choose')}>←</BackArrow>}
+				<h2>Perfectionlists</h2>
 				{activeView === 'choose' && (
 					<Choose
 						collections={collections}
@@ -84,7 +99,7 @@ const Toolbox = () => {
 				)}
 				{activeView === 'settings' && <Settings user={user} />}
 			</Main>
-			<BottomNav onNavChange={setActiveView} activeView={activeView} />
+			<BottomNav onNavChange={handleNavChange} activeView={activeView} />
 		</>
 	);
 };

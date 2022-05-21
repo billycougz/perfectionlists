@@ -19,7 +19,7 @@ const TextBox = styled.div`
 	@media (max-width: 480px) {
 		background: white;
 		color: black;
-		padding: 1px 10px;
+		padding: 1px 15px;
 		border-radius: 10px;
 	}
 `;
@@ -126,6 +126,10 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 		sideNav.style.display = 'block';
 	};
 
+	const handleCompareClick = () => {
+		return collections[0] && collections[1] ? onCompare() : alert('Choose two collections before clicking Compare');
+	};
+
 	return (
 		<Container>
 			<TextBox>
@@ -165,7 +169,7 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 												<img
 													height='128px'
 													onClick={() => handleSuggestionClick(index, suggestion)}
-													src={suggestion.images[0].url}
+													src={suggestion.images[0]?.url}
 												/>
 												<p>{suggestion.name}</p>
 											</div>
@@ -177,7 +181,7 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 				))}
 			</div>
 			<AlignCenter>
-				<Button onClick={onCompare}>Compare</Button>
+				<Button onClick={handleCompareClick}>Compare</Button>
 			</AlignCenter>
 		</Container>
 	);

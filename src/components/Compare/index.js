@@ -22,6 +22,7 @@ const CompareHeaders = styled(CompareRow)`
 	position: sticky;
 	top: 225px;
 	background: ${colors.backgroundBlack};
+	margin: 0 -5px;
 `;
 
 const Container = styled.div`
@@ -60,8 +61,10 @@ const PlaylistSummaryGroup = styled.div`
 	justify-content: space-around;
 	padding: 1em 0;
 	position: sticky;
-	top: 0;
+	top: -1px;
 	background: ${colors.backgroundBlack};
+	margin: -5px;
+	margin-bottom: 0;
 `;
 
 const PlaylistSummary = styled.div`
@@ -92,6 +95,7 @@ const FilterSelect = styled.select`
 	padding: 5px;
 	border-radius: 5px;
 	margin-right: 5px;
+	max-width: 75%;
 `;
 
 const ForkButton = styled.button`
@@ -196,7 +200,7 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 			<PlaylistSummaryGroup>
 				{collections.map((collection, index) => (
 					<PlaylistSummary>
-						<img src={collection.images[0].url} />
+						<img src={collection.images[0]?.url} />
 						<div>{collection.name}</div>
 						<div>Side {index ? 'B' : 'A'}</div>
 					</PlaylistSummary>
