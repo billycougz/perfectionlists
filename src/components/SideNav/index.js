@@ -6,7 +6,7 @@ import { colors } from '../../styles/theme';
 const StyledNav = styled.div`
 	background-color: rgb(0, 0, 0);
 	height: calc(100% - 100px);
-	width: 205px;
+	width: 300px;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -48,10 +48,6 @@ const PlaylistGrid = styled.div`
 `;
 
 const Button = styled.button`
-	@media (min-width: 769px) {
-		display: ${({ closeButton }) => (closeButton ? 'none' : 'initial')};
-	}
-	float: ${({ closeButton }) => (closeButton ? 'right' : 'initial')};
 	border-radius: 10px;
 	border-width: 1px;
 	background: ${(props) => (props.isActive ? colors.green : 'white')};
@@ -62,6 +58,15 @@ const Button = styled.button`
 		background: ${colors.green};
 		color: white;
 		outline: 0;
+	}
+`;
+
+const CloseButton = styled(Button)`
+	top: 8px;
+	position: relative;
+	float: right;
+	@media (min-width: 769px) {
+		display: none;
 	}
 `;
 
@@ -87,9 +92,7 @@ const SideNav = ({ collections, onPlaylistSelect }) => {
 
 	return (
 		<StyledNav id='side-nav'>
-			<Button closeButton onClick={hideSideNav}>
-				Close
-			</Button>
+			<CloseButton onClick={hideSideNav}>Close</CloseButton>
 			<h1>
 				<span>Perfection</span>
 				<span>lists</span>

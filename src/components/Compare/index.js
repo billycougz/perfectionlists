@@ -5,6 +5,8 @@ import { colors } from '../../styles/theme';
 
 const ViewContainer = styled.div`
 	margin: 1em;
+	margin-top: -1em;
+	padding-bottom: 50px;
 `;
 
 const CompareRow = styled.div`
@@ -20,9 +22,9 @@ const CompareHeaders = styled(CompareRow)`
 	padding: 1em 0;
 	color: ${colors.textGray};
 	position: sticky;
-	top: 225px;
+	top: 230px;
 	background: ${colors.backgroundBlack};
-	margin: 0 -5px;
+	margin: 0 -1px;
 `;
 
 const Container = styled.div`
@@ -57,14 +59,15 @@ const TrackDetail = styled.div`
 `;
 
 const PlaylistSummaryGroup = styled.div`
-	display: flex;
-	justify-content: space-around;
-	padding: 1em 0;
+	display: grid;
+	grid-auto-flow: column;
+	grid-auto-columns: 1fr;
+	grid-gap: 1em;
 	position: sticky;
 	top: -1px;
+	padding: 1em 0;
+	margin: 0 -1px;
 	background: ${colors.backgroundBlack};
-	margin: -5px;
-	margin-bottom: 0;
 `;
 
 const PlaylistSummary = styled.div`
@@ -72,6 +75,8 @@ const PlaylistSummary = styled.div`
 	flex-direction: column;
 	align-items: center;
 	justify-content: space-around;
+	overflow: hidden;
+	text-align: center;
 	> img {
 		height: 152px;
 	}
@@ -86,6 +91,7 @@ const PlaylistSummary = styled.div`
 const OptionsContainer = styled.div`
 	display: flex;
 	justify-content: flex-start;
+	padding: 1em 0;
 `;
 
 const FilterSelect = styled.select`
@@ -148,6 +154,8 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 		switch (filterBy) {
 			case 'all':
 				return true;
+			case 'both':
+				return track.collections[collections[0].id] && track.collections[collections[1].id];
 			case 'oneOnly':
 				return track.collections[collections[0].id];
 			case 'twoOnly':
@@ -168,6 +176,7 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 	const handleForkClick = async () => {
 		const filterByMap = {
 			all: 'all tracks',
+			both: 'tracks that Side A & Side B have in common',
 			oneOnly: collections[0].name,
 			twoOnly: collections[1].name,
 			oneMissing: `tracks missing from ${collections[0].name}`,
@@ -187,6 +196,8 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 			await addTracksToPlaylist(newPlaylist.id, trackUris);
 		}
 	};
+
+	const trackCount = collections.reduce(getUniqueTracks, []).filter(filterTracks).length;
 
 	return (
 		<ViewContainer>
@@ -210,10 +221,11 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 			<OptionsContainer>
 				<FilterSelect onChange={(e) => setFilterBy(e.target.value)} value={filterBy}>
 					<option value='all'>All Tracks</option>
-					<option value='oneOnly'>{collections[0]?.name}</option>
-					<option value='twoOnly'>{collections[1]?.name}</option>
-					<option value='oneMissing'>{`Missing from ${collections[0]?.name}`}</option>
-					<option value='twoMissing'>{`Missing from ${collections[1]?.name}`}</option>
+					<option value='both'>Tracks in Common</option>
+					<option value='oneOnly'>Tracks from Side A</option>
+					<option value='twoOnly'>Tracks from Side B</option>
+					<option value='oneMissing'>Missing from Side A</option>
+					<option value='twoMissing'>Missing from Side B</option>
 				</FilterSelect>
 				<ForkButton onClick={handleForkClick}>Fork</ForkButton>
 			</OptionsContainer>
@@ -221,7 +233,7 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 			{collections[0] && collections[1] && (
 				<div>
 					<CompareHeaders>
-						<span>TRACK</span>
+						<span>{trackCount} TRACKS</span>
 						<SideStatus>
 							<span>A</span>
 						</SideStatus>

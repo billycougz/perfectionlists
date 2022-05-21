@@ -5,8 +5,9 @@ import Button from '../styles/Button';
 import { colors } from '../styles/theme';
 
 const Container = styled.div`
-	height: calc(100vh - 140px);
+	min-height: calc(100vh);
 	margin: 2em;
+	padding-bottom: 2em;
 	@media (max-width: 768px) {
 		margin: 2em 1em;
 	}
@@ -52,6 +53,7 @@ const InputGroup = styled.div`
 const Suggestions = styled.div`
 	margin: 1em 0;
 	label {
+		font-size: 1.25em;
 		display: block;
 		padding-bottom: 5px;
 	}

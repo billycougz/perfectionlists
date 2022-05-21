@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { getCurrentUser, getAlbum, getPlaylist } from '../api/spotify';
 import Choose from './Choose';
 import Settings from './Settings';
+import Button from '../styles/Button';
 
 const Main = styled.main`
 	> h2 {
@@ -13,19 +14,22 @@ const Main = styled.main`
 		text-align: center;
 	}
 	@media (min-width: 769px) {
-		padding-left: 245px;
+		padding-left: 335px;
 		> h2 {
 			display: none;
 		}
 	}
 `;
 
-const BackArrow = styled.button`
+const BackArrow = styled(Button)`
+	@media (min-width: 769px) {
+		top: 15px;
+	}
 	font-size: 2em;
 	position: absolute;
-	background: none;
-	color: white;
-	border: none;
+	z-index: 1;
+	margin-left: 10px;
+	line-height: 20px;
 `;
 
 const Toolbox = () => {
@@ -85,7 +89,11 @@ const Toolbox = () => {
 		<>
 			<SideNav collections={collections} onPlaylistSelect={handleCollectionUpdate} />
 			<Main>
-				{activeView === 'compare' && <BackArrow onClick={() => handleNavChange('choose')}>←</BackArrow>}
+				{activeView === 'compare' && (
+					<BackArrow small white onClick={() => handleNavChange('choose')}>
+						←
+					</BackArrow>
+				)}
 				<h2>Perfectionlists</h2>
 				{activeView === 'choose' && (
 					<Choose
