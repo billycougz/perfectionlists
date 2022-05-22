@@ -1,0 +1,10 @@
+{
+  "resourceName": "perfectionlistsDB",
+  "tableName": "perfectionlistsTable",
+  "partitionKey": {
+    "fieldName": "id",
+    "fieldType": "string"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}

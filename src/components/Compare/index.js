@@ -274,7 +274,7 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 						.map((track) => (
 							<CompareRow key={track.id}>
 								<Container>
-									<Image src={track.album.images[0].url} />
+									<Image src={track.album.images[0]?.url} />
 									<TrackDetail>
 										<div>{track.name}</div>
 										<div>{track.artists[0].name}</div>
