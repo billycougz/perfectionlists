@@ -128,10 +128,26 @@ const AddButton = styled.button`
 	}
 `;
 
+const Toast = styled.div`
+	border-radius: 8px;
+	color: #fff;
+	display: inline-block;
+	font-size: 16px;
+	max-width: 450px;
+	padding: 12px 36px;
+	text-align: center;
+	background: ${colors.green};
+	bottom: 100px;
+	left: 50%;
+	transform: translate(-50%, 0px);
+	position: fixed;
+`;
+
 const Compare = ({ user, collections, onCollectionUpdate }) => {
 	// Defaulting uniqueBy to name/artist and have removed the option from the UI for now
 	const [uniqueBy, setUniqueBy] = useState('nameAndArtist');
 	const [filterBy, setFilterBy] = useState('all');
+	const [toast, setToast] = useState(null);
 
 	const getUniqueTracks = (uniqueTracks, collection) => {
 		const getUniqueId = (track) => (uniqueBy === 'id' ? track.id : `${track.name} : ${track.artists[0].name}`);
@@ -171,6 +187,7 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 		await addTracksToPlaylist(playlist.id, [trackUri]);
 		const index = collections.findIndex((collection) => collection.id === playlist.id);
 		onCollectionUpdate(index, playlist.external_urls.spotify);
+		handleToast('Track added');
 	};
 
 	const handleForkClick = async () => {
@@ -194,7 +211,14 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 				.map((track) => track.uri);
 			const newPlaylist = await createPlaylist(user.id, playlistName);
 			await addTracksToPlaylist(newPlaylist.id, trackUris);
+			handleToast('Playlist created');
 		}
+	};
+
+	const handleToast = (message) => {
+		clearTimeout(toast?.timeout);
+		const timeout = setTimeout(() => setToast(null), 3000);
+		setToast({ message, timeout });
 	};
 
 	const trackCount = collections.reduce(getUniqueTracks, []).filter(filterTracks).length;
@@ -229,6 +253,8 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 				</FilterSelect>
 				<ForkButton onClick={handleForkClick}>Fork</ForkButton>
 			</OptionsContainer>
+
+			{toast && <Toast>{toast.message}</Toast>}
 
 			{collections[0] && collections[1] && (
 				<div>
