@@ -1,16 +1,19 @@
 import axios from 'axios';
-import { refreshAccessToken } from './auth';
 
 // Private abstraction of axios to simplify Spotify API calls
 const spotify = async (url, method = 'get', postData, isRetry) => {
 	const token = localStorage.getItem('spotify-toolbox-token');
 	const headers = { Authorization: `Bearer ${token}` };
 	try {
-		const { data } = await axios({ url, method, headers, data: postData });
+		const { data } = await axios({
+			url,
+			method,
+			headers,
+			data: postData,
+		});
 		return data;
 	} catch (e) {
 		if (!isRetry) {
-			await refreshAccessToken();
 			return spotify(url, method, postData, true);
 		} else {
 			console.log(e);
@@ -41,8 +44,16 @@ export const createPlaylist = (userId, playlistName) => {
 };
 
 export const addTracksToPlaylist = (playlistId, uris) => {
-	const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks?uris=${uris}`;
-	return spotify(url, 'post');
+	// We can only post 100 tracks per request
+	const groupCount = Math.ceil(uris.length / 100);
+	const requests = [];
+	while (requests.length < groupCount) {
+		const groupIndex = requests.length;
+		const uriGroup = uris.filter((uri, index) => index >= groupIndex * 100 && index < groupIndex * 100 + 100);
+		const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks?uris=${uriGroup}`;
+		requests.push(spotify(url, 'post'));
+	}
+	return Promise.all(requests);
 };
 
 export const getSearchResults = (searchValue) => {
