@@ -40,6 +40,10 @@
           "deploymentBucketName": "amplify-spotifytoolbox-dev-223638-deployment",
           "s3Key": "amplify-builds/authorizeFunction-5631307041727a6d4e41-build.zip",
           "secretsPathAmplifyAppId": "d3qpbjpyn5ti6o"
+        },
+        "perfectionlistsFunction": {
+          "deploymentBucketName": "amplify-spotifytoolbox-dev-223638-deployment",
+          "s3Key": "amplify-builds/perfectionlistsFunction-76506a733255552b4e70-build.zip"
         }
       }
     }
