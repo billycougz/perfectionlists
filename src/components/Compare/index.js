@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { addTracksToPlaylist, createPlaylist } from '../../api/spotify';
 import styled from 'styled-components';
 import { colors } from '../../styles/theme';
+import Toast from '../Toast';
 
 const ViewContainer = styled.div`
 	margin: 1em;
@@ -16,6 +17,10 @@ const CompareRow = styled.div`
 	display: grid;
 	grid-template-columns: 7fr 1fr 1fr;
 	border-bottom: 1px solid #2b2b2b;
+	&:hover {
+		cursor: pointer;
+		background: rgb(43, 43, 43);
+	}
 `;
 
 const CompareHeaders = styled(CompareRow)`
@@ -25,6 +30,10 @@ const CompareHeaders = styled(CompareRow)`
 	top: 230px;
 	background: ${colors.backgroundBlack};
 	margin: 0 -1px;
+	&:hover {
+		cursor: initial;
+		background: ${colors.backgroundBlack};
+	}
 `;
 
 const Container = styled.div`
@@ -79,6 +88,10 @@ const PlaylistSummary = styled.div`
 	text-align: center;
 	> img {
 		height: 152px;
+		&:hover {
+			opacity: 0.5;
+			cursor: pointer;
+		}
 	}
 	> div {
 		padding-top: 10px;
@@ -90,7 +103,7 @@ const PlaylistSummary = styled.div`
 
 const OptionsContainer = styled.div`
 	display: flex;
-	justify-content: flex-start;
+	justify-content: center;
 	padding: 1em 0;
 `;
 
@@ -111,9 +124,7 @@ const ForkButton = styled.button`
 	padding: 6px 15px;
 	border-radius: 5px;
 	border: solid 1px gray;
-	@media (max-width: 768px) {
-		width: 100%;
-	}
+	width: 170px;
 `;
 
 const AddButton = styled.button`
@@ -126,21 +137,6 @@ const AddButton = styled.button`
 	@media (max-width: 768px) {
 		width: 100%;
 	}
-`;
-
-const Toast = styled.div`
-	border-radius: 8px;
-	color: #fff;
-	display: inline-block;
-	font-size: 16px;
-	max-width: 450px;
-	padding: 12px 36px;
-	text-align: center;
-	background: ${colors.green};
-	bottom: 100px;
-	left: 50%;
-	transform: translate(-50%, 0px);
-	position: fixed;
 `;
 
 const Compare = ({ user, collections, onCollectionUpdate }) => {
@@ -183,7 +179,8 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 		}
 	};
 
-	const handleAddTrack = async (playlist, trackUri) => {
+	const handleAddTrack = async (e, playlist, trackUri) => {
+		e.stopPropagation();
 		await addTracksToPlaylist(playlist.id, [trackUri]);
 		const index = collections.findIndex((collection) => collection.id === playlist.id);
 		onCollectionUpdate(index, playlist.external_urls.spotify);
@@ -223,6 +220,18 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 
 	const trackCount = collections.reduce(getUniqueTracks, []).filter(filterTracks).length;
 
+	const handlePlaylistClick = (e, playlistUrl) => {
+		if (window.confirm('Open playlist in Spotify?')) {
+			window.open(playlistUrl);
+		}
+	};
+
+	const handleTrackClick = (e, trackUrl) => {
+		if (window.confirm('Open track in Spotify?')) {
+			window.open(trackUrl);
+		}
+	};
+
 	return (
 		<ViewContainer>
 			{false && (
@@ -235,7 +244,10 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 			<PlaylistSummaryGroup>
 				{collections.map((collection, index) => (
 					<PlaylistSummary>
-						<img src={collection.images[0]?.url} />
+						<img
+							src={collection.images[0]?.url}
+							onClick={(e) => handlePlaylistClick(e, collection.external_urls.spotify)}
+						/>
 						<div>{collection.name}</div>
 						<div>Side {index ? 'B' : 'A'}</div>
 					</PlaylistSummary>
@@ -272,7 +284,7 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 						.filter(filterTracks)
 						.sort((a, b) => a.name.localeCompare(b.name))
 						.map((track) => (
-							<CompareRow key={track.id}>
+							<CompareRow key={track.id} onClick={(e) => handleTrackClick(e, track.external_urls.spotify)}>
 								<Container>
 									<Image src={track.album.images[0]?.url} />
 									<TrackDetail>
@@ -280,12 +292,12 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 										<div>{track.artists[0].name}</div>
 									</TrackDetail>
 								</Container>
-								{collections.map((collection) => (
-									<SideStatus key={collection.id}>
+								{collections.map((collection, index) => (
+									<SideStatus key={collection.id + track.id + index}>
 										{track.collections[collection.id] ? (
 											'✓'
 										) : collection?.owner?.id === user.id ? (
-											<AddButton onClick={() => handleAddTrack(collection, track.uri)}>Add</AddButton>
+											<AddButton onClick={(e) => handleAddTrack(e, collection, track.uri)}>Add</AddButton>
 										) : (
 											'✕'
 										)}

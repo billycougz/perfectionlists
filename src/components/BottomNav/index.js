@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import CompareSVG from './compare.svg';
+import SpotifyLogo from './spotify.png';
 import ChooseSVG from './choose.svg';
 import SettingsSVG from './settings.svg';
 
@@ -16,7 +16,7 @@ const StyledNav = styled.div`
 `;
 
 const NavItem = styled.div`
-	opacity: ${(props) => (props.active ? 1 : 0.5)};
+	opacity: ${(props) => (props.active ? 1 : 0.4)};
 	padding: 2px 0;
 	display: flex;
 	flex-direction: column;
@@ -38,6 +38,17 @@ const NavItem = styled.div`
 	}
 `;
 
+const LogoContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	> span {
+		padding: 5px 0;
+	}
+	> a > img {
+		height: 35px;
+	}
+`;
+
 const BottomNav = ({ activeView, onNavChange }) => {
 	const isChooseCompare = ['choose', 'compare'].some((view) => view === activeView);
 	return (
@@ -48,6 +59,12 @@ const BottomNav = ({ activeView, onNavChange }) => {
 			<NavItem active={activeView === 'settings'} onClick={() => onNavChange('settings')}>
 				<img src={SettingsSVG} />
 			</NavItem>
+			<LogoContainer>
+				<span>Powered by:</span>
+				<a href='https://open.spotify.com/search' target='_blank'>
+					<img src={SpotifyLogo} />
+				</a>
+			</LogoContainer>
 		</StyledNav>
 	);
 };

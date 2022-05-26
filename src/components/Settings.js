@@ -5,6 +5,8 @@ import { handleLogout } from '../api/auth';
 import Button from '../styles/Button';
 import { colors } from '../styles/theme';
 import { useState } from 'react';
+import Spinner from './Spinner';
+import Toast from './Toast';
 
 const Container = styled.div`
 	margin: 2em;
@@ -39,27 +41,14 @@ const SuggestionsContainer = styled.div`
 	}
 `;
 
-const Toast = styled.div`
-	border-radius: 8px;
-	color: #fff;
-	display: inline-block;
-	font-size: 16px;
-	max-width: 450px;
-	padding: 12px 36px;
-	text-align: center;
-	background: ${colors.green};
-	bottom: 100px;
-	left: 50%;
-	transform: translate(-50%, 0px);
-	position: fixed;
-`;
-
 const Settings = ({ user }) => {
 	const [feedbackType, setFeedbackType] = useState('');
 	const [feedbackMessage, setFeedbackMessage] = useState('');
 	const [toast, setToast] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const submitFeedback = async () => {
+		setIsLoading(true);
 		const apiName = 'perfectionlistsApi';
 		const path = '/feedback';
 		const body = { id: uuidv4(), message: feedbackMessage, type: feedbackType };
@@ -68,6 +57,7 @@ const Settings = ({ user }) => {
 		setTimeout(() => setToast(false), 3000);
 		setFeedbackMessage('');
 		setFeedbackType('');
+		setIsLoading(false);
 	};
 
 	return (
@@ -86,30 +76,51 @@ const Settings = ({ user }) => {
 
 			<hr />
 
-			<SuggestionsContainer>
-				<h3>Feedback & Suggestions</h3>
-				<input type='radio' name='feedback' value='feature' onChange={(e) => setFeedbackType(e.target.value)} />
-				<label>Feature & Functionality Ideas</label>
-				<br />
-				<input type='radio' name='feedback' value='bug' onChange={(e) => setFeedbackType(e.target.value)} />
-				<label>Bugs</label>
-				<br />
-				<input type='radio' name='feedback' value='general' onChange={(e) => setFeedbackType(e.target.value)} />
-				<label>General</label>
-				<br />
-				<textarea
-					rows='4'
-					placeholder='Write a brief description...'
-					value={feedbackMessage}
-					onChange={(e) => setFeedbackMessage(e.target.value)}
-				></textarea>
-				<div>
-					<Button small onClick={submitFeedback}>
-						Submit
-					</Button>
-				</div>
-				{toast && <Toast>Your feedback was submitted</Toast>}
-			</SuggestionsContainer>
+			{!isLoading && (
+				<SuggestionsContainer>
+					<h3>Feedback & Suggestions</h3>
+					<input
+						checked={feedbackType === 'feature'}
+						type='radio'
+						name='feedback'
+						value='feature'
+						onChange={(e) => setFeedbackType(e.target.value)}
+					/>
+					<label>Feature & Functionality Ideas</label>
+					<br />
+					<input
+						checked={feedbackType === 'bug'}
+						type='radio'
+						name='feedback'
+						value='bug'
+						onChange={(e) => setFeedbackType(e.target.value)}
+					/>
+					<label>Bugs</label>
+					<br />
+					<input
+						checked={feedbackType === 'general'}
+						type='radio'
+						name='feedback'
+						value='general'
+						onChange={(e) => setFeedbackType(e.target.value)}
+					/>
+					<label>General</label>
+					<br />
+					<textarea
+						rows='4'
+						placeholder='Write a brief description...'
+						value={feedbackMessage}
+						onChange={(e) => setFeedbackMessage(e.target.value)}
+					></textarea>
+					<div>
+						<Button small onClick={submitFeedback}>
+							Submit
+						</Button>
+					</div>
+				</SuggestionsContainer>
+			)}
+			{isLoading && <Spinner leftAdjust />}
+			{toast && <Toast>Thank you for your feedback</Toast>}
 		</Container>
 	);
 };
