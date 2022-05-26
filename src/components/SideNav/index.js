@@ -6,7 +6,7 @@ import { colors } from '../../styles/theme';
 const StyledNav = styled.div`
 	background-color: rgb(0, 0, 0);
 	height: calc(100% - 100px);
-	width: 300px;
+	width: 250px;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -40,10 +40,12 @@ const PlaylistGrid = styled.div`
 		width: 0;
 		height: 0;
 	}
-	span {
+	a {
+		font-size: 12px;
 		text-overflow: ellipsis;
 		overflow: hidden;
 		white-space: nowrap;
+		cursor: pointer;
 	}
 `;
 
@@ -90,6 +92,12 @@ const SideNav = ({ collections, onPlaylistSelect }) => {
 		sideNav.style.display = 'none';
 	};
 
+	const handlePlaylistClick = (e, playlistUrl) => {
+		if (window.confirm('Open playlist in Spotify?')) {
+			window.open(playlistUrl);
+		}
+	};
+
 	return (
 		<StyledNav id='side-nav'>
 			<CloseButton onClick={hideSideNav}>Close</CloseButton>
@@ -101,7 +109,7 @@ const SideNav = ({ collections, onPlaylistSelect }) => {
 			<PlaylistGrid>
 				{playlists.map((playlist) => (
 					<React.Fragment key={playlist.id}>
-						<span>{playlist.name}</span>
+						<a onClick={(e) => handlePlaylistClick(e, playlist.external_urls.spotify)}>{playlist.name}</a>
 						{['A', 'B'].map((side, index) => (
 							<Button
 								key={index}

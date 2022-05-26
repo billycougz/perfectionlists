@@ -14,22 +14,26 @@ const Main = styled.main`
 		text-align: center;
 	}
 	@media (min-width: 769px) {
-		padding-left: 335px;
+		padding-left: 285px;
 		> h2 {
 			display: none;
 		}
 	}
 `;
 
-const BackArrow = styled(Button)`
+const BackArrow = styled.button`
 	@media (min-width: 769px) {
 		top: 15px;
 	}
-	font-size: 2em;
+	background: none;
+	color: white;
+	border: none;
+	font-size: 3em;
 	position: absolute;
 	z-index: 1;
 	margin-left: 10px;
 	line-height: 20px;
+	cursor: pointer;
 `;
 
 const Toolbox = () => {
@@ -90,8 +94,8 @@ const Toolbox = () => {
 			<SideNav collections={collections} onPlaylistSelect={handleCollectionUpdate} />
 			<Main>
 				{activeView === 'compare' && (
-					<BackArrow small white onClick={() => handleNavChange('choose')}>
-						←
+					<BackArrow small onClick={() => handleNavChange('choose')}>
+						‹
 					</BackArrow>
 				)}
 				<h2>Perfectionlists</h2>

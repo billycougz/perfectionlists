@@ -5,6 +5,7 @@ import { hasValidToken, getAuthUrl } from './api/auth';
 import GlobalStyle from './styles/GlobalStyle';
 import Toolbox from './components/Toolbox';
 import { colors } from './styles/theme';
+import Spinner from './components/Spinner';
 
 const Container = styled.div`
 	margin: 2em;
@@ -39,7 +40,7 @@ function App() {
 	return (
 		<>
 			<GlobalStyle />
-			{isLoggedIn === null && 'Loading'}
+			{isLoggedIn === null && <Spinner />}
 			{isLoggedIn === true && <Toolbox />}
 
 			{isLoggedIn === false && (
