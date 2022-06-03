@@ -11,6 +11,9 @@ const GlobalStyle = createGlobalStyle`
 	    min-height: 100vh;
         font-size: 14px;
     }
+    button, select, input, a {
+        cursor: pointer;
+    }
 `;
 
 export default GlobalStyle;

@@ -92,8 +92,8 @@ const SideNav = ({ collections, onPlaylistSelect }) => {
 		sideNav.style.display = 'none';
 	};
 
-	const handlePlaylistClick = (e, playlistUrl) => {
-		if (window.confirm('Open playlist in Spotify?')) {
+	const handlePlaylistClick = (e, playlistUrl, name) => {
+		if (window.confirm(`Open ${name} in Spotify?`)) {
 			window.open(playlistUrl);
 		}
 	};
@@ -109,7 +109,9 @@ const SideNav = ({ collections, onPlaylistSelect }) => {
 			<PlaylistGrid>
 				{playlists.map((playlist) => (
 					<React.Fragment key={playlist.id}>
-						<a onClick={(e) => handlePlaylistClick(e, playlist.external_urls.spotify)}>{playlist.name}</a>
+						<a onClick={(e) => handlePlaylistClick(e, playlist.external_urls.spotify, playlist.name)}>
+							{playlist.name}
+						</a>
 						{['A', 'B'].map((side, index) => (
 							<Button
 								key={index}
