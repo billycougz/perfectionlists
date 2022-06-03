@@ -20,23 +20,25 @@ const getBorder = ({ green, white, outline }) => {
 	return `solid 1px ${color}`;
 };
 
-const Button = styled.a`
+const Button = styled.button`
 	background: ${getBackground};
 	color: ${getColor};
 	border: ${getBorder};
 	display: inline-block;
 	text-decoration: none;
 	font-weight: 700;
+	font-size: ${({ xs }) => (xs ? '10px' : '1em')};
 	letter-spacing: 1px;
 	text-transform: uppercase;
 	border-radius: 50px;
-	padding: ${({ small }) => (small ? '5px 10px' : '11px 24px')};
+	padding: ${({ xs, small }) => (xs ? '2px 5px' : small ? '5px 10px' : '11px 24px')};
 	cursor: pointer;
 	&:hover,
 	&:focus {
 		background: white;
 		color: black;
 		outline: 0;
+		opacity: 0.75;
 	}
 `;
 

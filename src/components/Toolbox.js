@@ -29,10 +29,11 @@ const BackArrow = styled.button`
 	color: white;
 	border: none;
 	font-size: 3em;
+	font-weight: bold;
 	position: absolute;
 	z-index: 1;
 	margin-left: 10px;
-	line-height: 20px;
+	line-height: 26px;
 	cursor: pointer;
 `;
 

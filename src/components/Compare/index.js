@@ -15,10 +15,10 @@ const CompareRow = styled.div`
 	align-items: center;
 	justify-content: space-between;
 	display: grid;
+	border-radius: 5px;
 	grid-template-columns: 7fr 1fr 1fr;
 	border-bottom: 1px solid #2b2b2b;
 	&:hover {
-		cursor: pointer;
 		background: rgb(43, 43, 43);
 	}
 `;
@@ -220,15 +220,9 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 
 	const trackCount = collections.reduce(getUniqueTracks, []).filter(filterTracks).length;
 
-	const handlePlaylistClick = (e, playlistUrl) => {
-		if (window.confirm('Open playlist in Spotify?')) {
-			window.open(playlistUrl);
-		}
-	};
-
-	const handleTrackClick = (e, trackUrl) => {
-		if (window.confirm('Open track in Spotify?')) {
-			window.open(trackUrl);
+	const handleContentClick = (e, url, name) => {
+		if (window.confirm(`Open ${name} in Spotify?`)) {
+			window.open(url);
 		}
 	};
 
@@ -246,7 +240,7 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 					<PlaylistSummary>
 						<img
 							src={collection.images[0]?.url}
-							onClick={(e) => handlePlaylistClick(e, collection.external_urls.spotify)}
+							onClick={(e) => handleContentClick(e, collection.external_urls.spotify, collection.name)}
 						/>
 						<div>{collection.name}</div>
 						<div>Side {index ? 'B' : 'A'}</div>
@@ -284,7 +278,10 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 						.filter(filterTracks)
 						.sort((a, b) => a.name.localeCompare(b.name))
 						.map((track) => (
-							<CompareRow key={track.id} onClick={(e) => handleTrackClick(e, track.external_urls.spotify)}>
+							<CompareRow
+								key={track.id}
+								onClick={(e) => handleContentClick(e, track.external_urls.spotify, track.name)}
+							>
 								<Container>
 									<Image src={track.album.images[0]?.url} />
 									<TrackDetail>

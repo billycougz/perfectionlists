@@ -11,10 +11,11 @@ const Container = styled.div`
 	background: ${colors.green};
 	bottom: 100px;
 	left: calc(50% + 250px);
+	transform: translate(calc(-50% - 100px), 0);
 	@media (max-width: 768px) {
 		left: 50%;
+		transform: translate(-50%, 0);
 	}
-	transform: translate(calc(-50% - 100px), 0);
 	position: fixed;
 	white-space: nowrap;
 `;

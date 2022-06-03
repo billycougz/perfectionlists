@@ -29,17 +29,86 @@ const SuggestionsContainer = styled.div`
 	textarea {
 		margin-top: 1em;
 		width: 100%;
+		background: rgba(255, 255, 255, 0.1);
+		color: white;
+		padding: 0.5em;
+		border-radius: 5px;
 	}
-	input {
-		margin: 0.5em 1em;
-	}
-	a {
+	button {
 		display: block;
 		margin: auto;
 		width: min-content;
 		margin-top: 1em;
 	}
 `;
+
+const RadioContainer = styled.label`
+	display: block;
+	position: relative;
+	padding-left: 35px;
+	margin-bottom: 20px;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+	/* Hide the browser's default radio button */
+	> input {
+		position: absolute;
+		opacity: 0;
+		cursor: pointer;
+	}
+
+	/* Create a custom radio button */
+	.checkmark {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 25px;
+		width: 25px;
+		background-color: #eee;
+		border-radius: 50%;
+	}
+
+	/* On mouse-over, add a grey background color */
+	&:hover > input ~ .checkmark {
+		background-color: #ccc;
+	}
+
+	/* When the radio button is checked, add a blue background */
+	> input:checked ~ .checkmark {
+		background-color: ${colors.green};
+	}
+
+	/* Create the indicator (the dot/circle - hidden when not checked) */
+	.checkmark:after {
+		content: '';
+		position: absolute;
+		display: none;
+	}
+
+	/* Show the indicator (dot/circle) when checked */
+	> input:checked ~ .checkmark:after {
+		display: block;
+	}
+
+	/* Style the indicator (dot/circle) */
+	.checkmark:after {
+		top: 9px;
+		left: 9px;
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: white;
+	}
+`;
+
+const feedbackOptions = [
+	{ label: 'Features & Functionality Ideas', value: 'feature' },
+	{ label: 'Bugs', value: 'bug' },
+	{ label: 'General', value: 'general' },
+];
 
 const Settings = ({ user }) => {
 	const [feedbackType, setFeedbackType] = useState('');
@@ -51,7 +120,7 @@ const Settings = ({ user }) => {
 		setIsLoading(true);
 		const apiName = 'perfectionlistsApi';
 		const path = '/feedback';
-		const body = { id: uuidv4(), message: feedbackMessage, type: feedbackType };
+		const body = { id: uuidv4(), message: feedbackMessage, type: feedbackType, emailAddress: user.email };
 		await API.post(apiName, path, { body });
 		setToast(true);
 		setTimeout(() => setToast(false), 3000);
@@ -79,33 +148,20 @@ const Settings = ({ user }) => {
 			{!isLoading && (
 				<SuggestionsContainer>
 					<h3>Feedback & Suggestions</h3>
-					<input
-						checked={feedbackType === 'feature'}
-						type='radio'
-						name='feedback'
-						value='feature'
-						onChange={(e) => setFeedbackType(e.target.value)}
-					/>
-					<label>Feature & Functionality Ideas</label>
-					<br />
-					<input
-						checked={feedbackType === 'bug'}
-						type='radio'
-						name='feedback'
-						value='bug'
-						onChange={(e) => setFeedbackType(e.target.value)}
-					/>
-					<label>Bugs</label>
-					<br />
-					<input
-						checked={feedbackType === 'general'}
-						type='radio'
-						name='feedback'
-						value='general'
-						onChange={(e) => setFeedbackType(e.target.value)}
-					/>
-					<label>General</label>
-					<br />
+
+					{feedbackOptions.map((option) => (
+						<RadioContainer>
+							{option.label}
+							<input
+								checked={feedbackType === option.value}
+								type='radio'
+								name='feedback'
+								value={option.value}
+								onChange={(e) => setFeedbackType(e.target.value)}
+							/>
+							<span class='checkmark' />
+						</RadioContainer>
+					))}
 					<textarea
 						rows='4'
 						placeholder='Write a brief description...'
@@ -113,14 +169,14 @@ const Settings = ({ user }) => {
 						onChange={(e) => setFeedbackMessage(e.target.value)}
 					></textarea>
 					<div>
-						<Button small onClick={submitFeedback}>
+						<Button small disabled={!feedbackMessage || !feedbackType} onClick={submitFeedback}>
 							Submit
 						</Button>
 					</div>
 				</SuggestionsContainer>
 			)}
 			{isLoading && <Spinner leftAdjust />}
-			{toast && <Toast>Thank you for your feedback</Toast>}
+			{toast && <Toast>Feedback submitted</Toast>}
 		</Container>
 	);
 };

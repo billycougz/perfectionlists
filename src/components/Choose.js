@@ -64,9 +64,17 @@ const Suggestions = styled.div`
 			width: 128px;
 			display: inline-block;
 			margin: 0 20px 0 0;
+			text-align: center;
+			> img {
+				&:hover {
+					opacity: 0.5;
+					cursor: pointer;
+				}
+			}
 			> p {
 				text-overflow: ellipsis;
 				overflow: hidden;
+				margin: 5px 0;
 			}
 		}
 	}
@@ -132,6 +140,12 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 		return collections[0] && collections[1] ? onCompare() : alert('Choose two collections before clicking Compare');
 	};
 
+	const handleOpenSuggestion = (e, collectionUrl, name) => {
+		if (window.confirm(`Open ${name} in Spotify?`)) {
+			window.open(collectionUrl);
+		}
+	};
+
 	return (
 		<Container>
 			<TextBox>
@@ -174,6 +188,13 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 													src={suggestion.images[0]?.url}
 												/>
 												<p>{suggestion.name}</p>
+												<Button
+													xs
+													white
+													onClick={(e) => handleOpenSuggestion(e, suggestion.external_urls.spotify, suggestion.name)}
+												>
+													Open Spotify
+												</Button>
 											</div>
 										))}
 									</div>
