@@ -3,10 +3,9 @@ import BottomNav from './BottomNav';
 import SideNav from './SideNav';
 import Compare from './Compare';
 import { useEffect, useState } from 'react';
-import { getCurrentUser, getAlbum, getPlaylist } from '../api/spotify';
+import { getCurrentUser, getAlbum, getPlaylist, getUserPlaylists } from '../api/spotify';
 import Choose from './Choose';
 import Settings from './Settings';
-import Button from '../styles/Button';
 
 const Main = styled.main`
 	> h2 {
@@ -41,10 +40,13 @@ const Toolbox = () => {
 	const [activeView, setActiveView] = useState('choose');
 	const [user, setUser] = useState(null);
 	const [collections, setCollections] = useState([null, null]);
+	const [userPlaylists, setUserPlaylists] = useState([]);
 
 	useEffect(() => {
 		const setAsyncValues = async () => {
 			setUser(await getCurrentUser());
+			const { items } = await getUserPlaylists();
+			setUserPlaylists(items);
 		};
 		setAsyncValues();
 	}, []);
@@ -60,6 +62,11 @@ const Toolbox = () => {
 			collections[index] = null;
 			setCollections(collections.slice());
 		}
+	};
+
+	const handleNewPlaylist = async () => {
+		const { items } = await getUserPlaylists();
+		setUserPlaylists(items);
 	};
 
 	// Identifies the type (i.e. playlist or album) and id associated with a URL
@@ -92,7 +99,7 @@ const Toolbox = () => {
 
 	return (
 		<>
-			<SideNav collections={collections} onPlaylistSelect={handleCollectionUpdate} />
+			<SideNav playlists={userPlaylists} collections={collections} onPlaylistSelect={handleCollectionUpdate} />
 			<Main>
 				{activeView === 'compare' && (
 					<BackArrow small onClick={() => handleNavChange('choose')}>
@@ -108,7 +115,12 @@ const Toolbox = () => {
 					/>
 				)}
 				{activeView === 'compare' && (
-					<Compare user={user} collections={collections} onCollectionUpdate={handleCollectionUpdate} />
+					<Compare
+						user={user}
+						collections={collections}
+						onCollectionUpdate={handleCollectionUpdate}
+						onNewPlaylistCreated={handleNewPlaylist}
+					/>
 				)}
 				{activeView === 'settings' && <Settings user={user} />}
 			</Main>

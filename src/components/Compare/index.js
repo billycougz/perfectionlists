@@ -139,7 +139,7 @@ const AddButton = styled.button`
 	}
 `;
 
-const Compare = ({ user, collections, onCollectionUpdate }) => {
+const Compare = ({ user, collections, onCollectionUpdate, onNewPlaylistCreated }) => {
 	// Defaulting uniqueBy to name/artist and have removed the option from the UI for now
 	const [uniqueBy, setUniqueBy] = useState('nameAndArtist');
 	const [filterBy, setFilterBy] = useState('all');
@@ -208,6 +208,7 @@ const Compare = ({ user, collections, onCollectionUpdate }) => {
 				.map((track) => track.uri);
 			const newPlaylist = await createPlaylist(user.id, playlistName);
 			await addTracksToPlaylist(newPlaylist.id, trackUris);
+			onNewPlaylistCreated();
 			handleToast('Playlist created');
 		}
 	};

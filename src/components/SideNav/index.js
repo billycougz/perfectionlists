@@ -1,18 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { getUserPlaylists } from '../../api/spotify';
 import { colors } from '../../styles/theme';
 
 const StyledNav = styled.div`
 	background-color: rgb(0, 0, 0);
-	height: calc(100% - 100px);
 	width: 250px;
+	overflow: scroll;
+	height: calc(100vh - 70px);
+	scrollbar-width: none; /* Firefox */
+	&::-webkit-scrollbar {
+		/* WebKit */
+		width: 0;
+		height: 0;
+	}
 	position: fixed;
 	top: 0;
 	left: 0;
 	padding: 20px;
 	@media (max-width: 768px) {
 		display: none;
+		width: 100%;
+		box-sizing: border-box;
 	}
 	> h1 {
 		margin-top: 0;
@@ -32,14 +40,6 @@ const PlaylistGrid = styled.div`
 	display: grid;
 	grid-template-columns: 10fr 1fr 1fr;
 	gap: 1em;
-	overflow: scroll;
-	height: calc(100% - 110px);
-	scrollbar-width: none; /* Firefox */
-	&::-webkit-scrollbar {
-		/* WebKit */
-		width: 0;
-		height: 0;
-	}
 	a {
 		font-size: 12px;
 		text-overflow: ellipsis;
@@ -72,17 +72,7 @@ const CloseButton = styled(Button)`
 	}
 `;
 
-const SideNav = ({ collections, onPlaylistSelect }) => {
-	const [playlists, setPlaylists] = useState([]);
-
-	useEffect(() => {
-		const setAsyncValues = async () => {
-			const { items } = await getUserPlaylists();
-			setPlaylists(items);
-		};
-		setAsyncValues();
-	}, []);
-
+const SideNav = ({ collections, onPlaylistSelect, playlists }) => {
 	const isActive = (index, playlist) => {
 		return collections[index] ? collections[index].external_urls.spotify === playlist.external_urls.spotify : false;
 	};

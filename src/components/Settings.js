@@ -42,6 +42,10 @@ const SuggestionsContainer = styled.div`
 	}
 `;
 
+const HR = styled.hr`
+	margin: 2em 0;
+`;
+
 const RadioContainer = styled.label`
 	display: block;
 	position: relative;
@@ -52,7 +56,7 @@ const RadioContainer = styled.label`
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-
+	padding-top: 5px;
 	/* Hide the browser's default radio button */
 	> input {
 		position: absolute;
@@ -143,7 +147,7 @@ const Settings = ({ user }) => {
 				</div>
 			</AccountContainer>
 
-			<hr />
+			<HR />
 
 			{!isLoading && (
 				<SuggestionsContainer>
