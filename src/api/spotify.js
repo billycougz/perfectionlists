@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { refreshAccessToken } from './auth';
 
 // Private abstraction of axios to simplify Spotify API calls
 const spotify = async (url, method = 'get', postData, isRetry) => {
@@ -13,6 +14,9 @@ const spotify = async (url, method = 'get', postData, isRetry) => {
 		});
 		return data;
 	} catch (e) {
+		if (e.response.status === 401) {
+			await refreshAccessToken();
+		}
 		if (!isRetry) {
 			return spotify(url, method, postData, true);
 		} else {
