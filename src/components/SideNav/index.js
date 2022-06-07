@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { createPlaylist } from '../../api/spotify';
 import { colors } from '../../styles/theme';
+import Toast from '../Toast';
 
 const StyledNav = styled.div`
 	background-color: rgb(0, 0, 0);
@@ -72,7 +74,15 @@ const CloseButton = styled(Button)`
 	}
 `;
 
-const SideNav = ({ collections, onPlaylistSelect, playlists }) => {
+const CreateNewButton = styled(Button)`
+	display: block;
+	margin: 1em 0;
+	width: 100%;
+`;
+
+const SideNav = ({ collections, onPlaylistSelect, playlists, user }) => {
+	const [toast, setToast] = useState(null);
+
 	const isActive = (index, playlist) => {
 		return collections[index] ? collections[index].external_urls.spotify === playlist.external_urls.spotify : false;
 	};
@@ -88,6 +98,14 @@ const SideNav = ({ collections, onPlaylistSelect, playlists }) => {
 		}
 	};
 
+	const handleNewPlaylistClick = async () => {
+		const playlistName = window.prompt('Enter a name for your new playlist.');
+		const playlist = await createPlaylist(user.id, playlistName);
+		onPlaylistSelect(0, playlist.external_urls.spotify, true);
+		const timeout = setTimeout(() => setToast(null), 3000);
+		setToast({ message: 'Playlist added to Side A', timeout });
+	};
+
 	return (
 		<StyledNav id='side-nav'>
 			<CloseButton onClick={hideSideNav}>Close</CloseButton>
@@ -96,6 +114,7 @@ const SideNav = ({ collections, onPlaylistSelect, playlists }) => {
 				<span>lists</span>
 			</h1>
 			<h2>Your Library</h2>
+			<CreateNewButton onClick={handleNewPlaylistClick}>Create New Playlist</CreateNewButton>
 			<PlaylistGrid>
 				{playlists.map((playlist) => (
 					<React.Fragment key={playlist.id}>
@@ -114,6 +133,7 @@ const SideNav = ({ collections, onPlaylistSelect, playlists }) => {
 					</React.Fragment>
 				))}
 			</PlaylistGrid>
+			{toast && <Toast>{toast.message}</Toast>}
 		</StyledNav>
 	);
 };

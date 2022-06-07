@@ -116,9 +116,21 @@ const Toolbox = () => {
 		window.scrollTo(0, 0);
 	};
 
+	const handlePlaylistSelect = (index, url, isNew) => {
+		handleCollectionUpdate(index, url);
+		if (isNew) {
+			handleNewPlaylist();
+		}
+	};
+
 	return (
 		<>
-			<SideNav playlists={userPlaylists} collections={collections} onPlaylistSelect={handleCollectionUpdate} />
+			<SideNav
+				user={user}
+				playlists={userPlaylists}
+				collections={collections}
+				onPlaylistSelect={handlePlaylistSelect}
+			/>
 			<Main>
 				{activeView === 'compare' && (
 					<BackArrow small onClick={() => handleNavChange('choose')}>
