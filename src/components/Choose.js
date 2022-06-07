@@ -129,12 +129,14 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 		clearTimeout(searchTimeout);
 		if (value) {
 			const timeout = setTimeout(async () => {
-				const { albums, playlists } = await getSearchResults(value);
-				const updatedSuggestions = {};
-				updatedSuggestions.selectedType = suggestions ? suggestions.selectedType : 'Playlists';
-				updatedSuggestions.collectionIndex = index;
-				updatedSuggestions.Playlists = playlists.items;
-				updatedSuggestions.Albums = albums.items;
+				const { albums, playlists, artists } = await getSearchResults(value);
+				const updatedSuggestions = {
+					selectedType: suggestions ? suggestions.selectedType : 'Playlists',
+					collectionIndex: index,
+					Playlists: playlists.items,
+					Albums: albums.items,
+					Artists: artists.items,
+				};
 				setSuggestions(updatedSuggestions);
 				window.scrollTo(0, 0);
 			}, 275);
@@ -147,7 +149,7 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 	const handleSuggestionClick = (suggestion) => {
 		const index = suggestions.collectionIndex;
 		inputValues[index] = suggestion.name;
-		onCollectionUpdate(index, suggestion.external_urls.spotify);
+		onCollectionUpdate(index, suggestion.external_urls.spotify, suggestion);
 		setInputValues(inputValues.slice());
 		setSuggestions(null);
 	};
@@ -199,7 +201,7 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 				)}
 				{suggestions && (
 					<Suggestions>
-						{['Playlists', 'Albums'].map((type) => (
+						{['Playlists', 'Albums', 'Artists'].map((type) => (
 							<SuggestionType
 								selected={type === suggestions.selectedType}
 								onClick={() => setSuggestions({ ...suggestions, selectedType: type })}

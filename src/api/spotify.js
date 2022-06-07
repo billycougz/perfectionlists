@@ -41,6 +41,9 @@ export const getPlaylist = async (playlistId) => {
 
 export const getAlbum = (albumId) => spotify(`https://api.spotify.com/v1/albums/${albumId}`);
 
+export const getArtistTracks = (artistId) =>
+	spotify(`https://api.spotify.com/v1/artists/${artistId}/top-tracks?market=us`);
+
 export const createPlaylist = (userId, playlistName) => {
 	const url = `https://api.spotify.com/v1/users/${userId}/playlists`;
 	const data = JSON.stringify({ name: playlistName });
@@ -61,5 +64,5 @@ export const addTracksToPlaylist = (playlistId, uris) => {
 };
 
 export const getSearchResults = (searchValue) => {
-	return spotify(`https://api.spotify.com/v1/search?type=album,playlist&q=${searchValue}`);
+	return spotify(`https://api.spotify.com/v1/search?type=album,artist,playlist&q=${searchValue}`);
 };
