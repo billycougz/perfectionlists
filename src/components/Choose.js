@@ -175,13 +175,13 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 				<TextBox>
 					<h2>Choose two collections.</h2>
 					<p>
-						Select a playlist from <Link onClick={showSideNav}>Your Library</Link>&nbsp;, search for any Spotify
-						playlist or album, or{' '}
+						Select a playlist from <Link onClick={showSideNav}>Your Library</Link>&nbsp;, search and browse for
+						playlists, albums, and artists, or{' '}
 						<Link href='https://open.spotify.com/search' target='_blank'>
 							{' '}
 							Open Spotify
 						</Link>{' '}
-						to obtain the <i>share</i> link for any playlist or album.
+						to copy any collection's <i>share</i> link.
 					</p>
 				</TextBox>
 			)}
@@ -191,7 +191,7 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 						<InputGroup key={index}>
 							<label>Side {side}</label>
 							<input
-								placeholder='Search or paste a link...'
+								placeholder='Search and browse or paste a link...'
 								key={index}
 								onChange={(e) => handleInputChange(index, e.target.value)}
 								value={inputValues[index]}
