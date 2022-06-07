@@ -49,7 +49,7 @@ const Container = styled.div`
 const Spinner = ({ leftAdjust }) => {
 	return (
 		<Container leftAdjust={leftAdjust}>
-			<div class='lds-ring'>
+			<div className='lds-ring'>
 				<div></div>
 				<div></div>
 				<div></div>
