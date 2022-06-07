@@ -46,7 +46,7 @@ function App() {
 			{isLoggedIn === false && (
 				<Container>
 					<h1>Perfectionlists</h1>
-					<p>Build the perfect playlist by comparing against any playlist or album on Spotify.</p>
+					<p>Build the perfect playlist by comparing against any playlist, album, or artist on Spotify.</p>
 					<Link href={loginUrl}>Login</Link>
 				</Container>
 			)}
