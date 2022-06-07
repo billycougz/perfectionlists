@@ -28,22 +28,9 @@ const TextBox = styled.div`
 	}
 `;
 
-const CollectionGroup = styled.div`
-	margin: 2em 0;
-	> div > div {
-		/* Hide scrollbar for Chrome, Safari and Opera */
-		&::-webkit-scrollbar {
-			display: none;
-		}
-		/* Hide scrollbar for IE, Edge and Firefox */
-		-ms-overflow-style: none; /* IE and Edge */
-		scrollbar-width: none; /* Firefox */
-	}
-`;
-
 const InputGroup = styled.div`
+	margin: 20px auto;
 	max-width: 400px;
-	margin: auto;
 	label {
 		font-size: 1.25em;
 		display: block;
@@ -67,14 +54,16 @@ const Suggestions = styled.div`
 	background: rgba(255, 255, 255, 0.1);
 	padding: 1em;
 	border-radius: 5px;
-	label {
-		font-size: 1.25em;
-		display: block;
-		margin-bottom: 1em;
-	}
 	> div {
 		white-space: nowrap;
 		overflow: scroll;
+		/* Hide scrollbar for Chrome, Safari and Opera */
+		&::-webkit-scrollbar {
+			display: none;
+		}
+		/* Hide scrollbar for IE, Edge and Firefox */
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
 		> div {
 			width: 128px;
 			display: inline-block;
@@ -101,6 +90,16 @@ const Suggestions = styled.div`
 	}
 `;
 
+const SuggestionType = styled.button`
+	background: none;
+	border: none;
+	color: white;
+	margin: 0 1em 1em 0;
+	padding: 0 0 5px 0;
+	font-size: 16px;
+	border-bottom: ${({ selected }) => selected && 'solid 1px'};
+`;
+
 const Link = styled.a`
 	font-weight: bold;
 	color: ${colors.green};
@@ -124,21 +123,21 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 	}, [collections]);
 
 	const handleInputChange = async (index, value) => {
-		console.log(value);
 		inputValues[index] = value;
 		setInputValues(inputValues.slice());
 		onCollectionUpdate(index, value);
 		clearTimeout(searchTimeout);
 		if (value) {
 			const timeout = setTimeout(async () => {
-				const { albums, playlists } = await getSearchResults(value);
-				const updatedSuggestions = {};
-				updatedSuggestions.collectionIndex = index;
-				updatedSuggestions.types = [
-					{ type: 'Playlists', items: playlists.items },
-					{ type: 'Albums', items: albums.items },
-				];
-				setSuggestions({ ...updatedSuggestions });
+				const { albums, playlists, artists } = await getSearchResults(value);
+				const updatedSuggestions = {
+					selectedType: suggestions ? suggestions.selectedType : 'Playlists',
+					collectionIndex: index,
+					Playlists: playlists.items,
+					Albums: albums.items,
+					Artists: artists.items,
+				};
+				setSuggestions(updatedSuggestions);
 				window.scrollTo(0, 0);
 			}, 275);
 			setSearchTimeout(timeout);
@@ -147,9 +146,10 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 		}
 	};
 
-	const handleSuggestionClick = (index, suggestion) => {
+	const handleSuggestionClick = (suggestion) => {
+		const index = suggestions.collectionIndex;
 		inputValues[index] = suggestion.name;
-		onCollectionUpdate(index, suggestion.external_urls.spotify);
+		onCollectionUpdate(index, suggestion.external_urls.spotify, suggestion);
 		setInputValues(inputValues.slice());
 		setSuggestions(null);
 	};
@@ -188,46 +188,48 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 			<div>
 				{['A', 'B'].map((side, index) =>
 					suggestions && suggestions.collectionIndex !== index ? null : (
-						<CollectionGroup key={index} isValid={collections[index]}>
-							<InputGroup>
-								<label>Side {side}</label>
-								<input
-									placeholder='Search or paste a link...'
-									key={index}
-									onChange={(e) => handleInputChange(index, e.target.value)}
-									value={inputValues[index]}
-								/>
-							</InputGroup>
-
-							{suggestions &&
-								suggestions.collectionIndex === index &&
-								suggestions.types.map(({ type, items }) => (
-									<Suggestions>
-										<label>{type}</label>
-										<div>
-											{items.map((suggestion) => (
-												<div>
-													<img
-														height='128px'
-														width='128px'
-														onClick={() => handleSuggestionClick(index, suggestion)}
-														src={suggestion.images[0]?.url}
-													/>
-													<p>{suggestion.name}</p>
-													<Button
-														xs
-														white
-														onClick={(e) => handleOpenSuggestion(e, suggestion.external_urls.spotify, suggestion.name)}
-													>
-														Open Spotify
-													</Button>
-												</div>
-											))}
-										</div>
-									</Suggestions>
-								))}
-						</CollectionGroup>
+						<InputGroup key={index}>
+							<label>Side {side}</label>
+							<input
+								placeholder='Search or paste a link...'
+								key={index}
+								onChange={(e) => handleInputChange(index, e.target.value)}
+								value={inputValues[index]}
+							/>
+						</InputGroup>
 					)
+				)}
+				{suggestions && (
+					<Suggestions>
+						{['Playlists', 'Albums', 'Artists'].map((type) => (
+							<SuggestionType
+								selected={type === suggestions.selectedType}
+								onClick={() => setSuggestions({ ...suggestions, selectedType: type })}
+							>
+								{type}
+							</SuggestionType>
+						))}
+						<div>
+							{suggestions[suggestions.selectedType].map((suggestion) => (
+								<div>
+									<img
+										height='128px'
+										width='128px'
+										onClick={() => handleSuggestionClick(suggestion)}
+										src={suggestion.images[0]?.url}
+									/>
+									<p>{suggestion.name}</p>
+									<Button
+										xs
+										white
+										onClick={(e) => handleOpenSuggestion(e, suggestion.external_urls.spotify, suggestion.name)}
+									>
+										Open Spotify
+									</Button>
+								</div>
+							))}
+						</div>
+					</Suggestions>
 				)}
 			</div>
 			{!suggestions && (
