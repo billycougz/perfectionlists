@@ -175,8 +175,8 @@ const Choose = ({ collections, onCollectionUpdate, onCompare }) => {
 				<TextBox>
 					<h2>Choose two collections.</h2>
 					<p>
-						Select a playlist from <Link onClick={showSideNav}>Your Library</Link>&nbsp;, search and browse for
-						playlists, albums, and artists, or{' '}
+						Select a playlist from <Link onClick={showSideNav}>Your Library</Link>, search and browse for playlists,
+						albums, and artists, or{' '}
 						<Link href='https://open.spotify.com/search' target='_blank'>
 							{' '}
 							Open Spotify
