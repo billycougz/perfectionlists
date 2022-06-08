@@ -109,7 +109,7 @@ const RadioContainer = styled.label`
 `;
 
 const feedbackOptions = [
-	{ label: 'Features & Functionality Ideas', value: 'feature' },
+	{ label: 'New Features', value: 'feature' },
 	{ label: 'Bugs', value: 'bug' },
 	{ label: 'General', value: 'general' },
 ];

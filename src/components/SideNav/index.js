@@ -65,10 +65,15 @@ const Button = styled.button`
 	}
 `;
 
-const CloseButton = styled(Button)`
-	top: 8px;
-	position: relative;
-	float: right;
+const CloseButton = styled.button`
+	position: absolute;
+	top: 15px;
+	right: 0px;
+	border: none;
+	background: none;
+	font-size: 55px;
+	line-height: 30px;
+	color: white;
 	@media (min-width: 769px) {
 		display: none;
 	}
@@ -76,8 +81,10 @@ const CloseButton = styled(Button)`
 
 const CreateNewButton = styled(Button)`
 	display: block;
-	margin: 1em 0;
 	width: 100%;
+	max-width: 250px;
+	margin: 1em auto;
+	height: 25px;
 `;
 
 const SideNav = ({ collections, onPlaylistSelect, playlists, user }) => {
@@ -108,7 +115,7 @@ const SideNav = ({ collections, onPlaylistSelect, playlists, user }) => {
 
 	return (
 		<StyledNav id='side-nav'>
-			<CloseButton onClick={hideSideNav}>Close</CloseButton>
+			<CloseButton onClick={hideSideNav}>›</CloseButton>
 			<h1>
 				<span>Perfection</span>
 				<span>lists</span>
